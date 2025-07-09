@@ -127,6 +127,7 @@
             box-shadow: 0 0 0 4px rgba(25, 118, 210, 0.3); /* Blue glow on focus */
         }
 
+        /* Submit buttons within player cards */
         .player-card button {
             background: linear-gradient(180deg, #4caf50 0%, #388e3c 100%); /* Green gradient button */
             color: white;
@@ -142,6 +143,7 @@
             text-transform: uppercase; /* Uppercase text */
             letter-spacing: 0.05em;
             width: 100%; /* Ensure button takes full width of its parent */
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
         }
 
         .player-card button:hover {
@@ -155,6 +157,7 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
 
+        /* Start New Game button */
         .start-button {
             background: linear-gradient(180deg, #607d8b 0%, #455a64 100%); /* Gray gradient button */
             color: white;
@@ -170,6 +173,7 @@
             text-transform: uppercase;
             letter-spacing: 0.08em;
             max-width: 400px; /* Limit max width for aesthetic balance on large screens */
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
         }
 
         .start-button:hover {
@@ -190,9 +194,10 @@
             gap: 0.75rem; /* Space between keys */
             margin-top: 1.5rem;
             width: 100%; /* Make keyboard fill player card width */
-            max-width: 300px; /* Limit keyboard width */
+            max-width: 300px; /* Limit keyboard width to keep keys from becoming too large */
             margin-left: auto;
             margin-right: auto;
+            box-sizing: border-box; /* Ensure padding/border are included in width */
         }
 
         .key {
@@ -210,6 +215,7 @@
             align-items: center;
             justify-content: center;
             aspect-ratio: 1 / 1; /* Make keys square */
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
         }
 
         .key:hover {
@@ -248,18 +254,20 @@
             padding: 0.75rem 1.5rem;
             border-radius: 1rem;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
         }
 
         .music-controls button {
             background-color: #42a5f5; /* Blue for music control */
             color: white;
-            padding: 0.75rem 1.25rem;
+            padding: 0.85rem 1.5rem; /* Slightly increased padding */
             border: none;
             border-radius: 0.75rem;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 1.125rem; /* Slightly increased font size */
             font-weight: 600;
             transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
         }
 
         .music-controls button:hover {
@@ -356,6 +364,9 @@
                 flex-direction: column;
                 gap: 0.75rem;
                 padding: 0.75rem 1rem;
+            }
+            .music-controls button {
+                width: 100%; /* Ensure music buttons also take full width on small screens */
             }
             .music-controls input[type="range"] {
                 width: 80%;
