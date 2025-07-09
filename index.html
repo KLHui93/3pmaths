@@ -22,10 +22,10 @@
         }
 
         h1 {
-            font-size: 4.5rem; /* Increased title size */
+            font-size: 5.5rem; /* Increased title size for more impact */
             font-weight: 900; /* Ultra bold */
             color: #0d47a1; /* Deep blue title */
-            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.15); /* More pronounced shadow */
+            text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2); /* More pronounced shadow */
             margin-bottom: 1.5rem;
             letter-spacing: -0.05em; /* Slightly tighter letter spacing */
         }
@@ -35,6 +35,19 @@
             color: #455a64; /* Grayish blue subtitle */
             margin-bottom: 2.5rem;
             font-weight: 500;
+        }
+
+        .timer-display {
+            font-size: 3.5rem; /* Large timer display */
+            font-weight: 800;
+            color: #d32f2f; /* Red color for urgency */
+            background-color: #fff;
+            padding: 1rem 2rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+            margin-bottom: 2rem;
+            min-width: 200px; /* Ensure consistent width */
+            text-align: center;
         }
 
         .game-container {
@@ -297,10 +310,14 @@
                 padding: 2rem;
             }
             h1 {
-                font-size: 3.5rem; /* Adjust title size for tablets */
+                font-size: 4rem; /* Adjust title size for tablets */
             }
             .subtitle {
                 font-size: 1.25rem;
+            }
+            .timer-display {
+                font-size: 3rem;
+                padding: 0.8rem 1.5rem;
             }
         }
 
@@ -317,7 +334,7 @@
                 padding: 1.5rem;
             }
             h1 {
-                font-size: 2.8rem; /* Adjust title size for mobile */
+                font-size: 3.2rem; /* Adjust title size for mobile */
             }
             .subtitle {
                 font-size: 1rem;
@@ -340,6 +357,10 @@
             }
             .music-controls input[type="range"] {
                 width: 80%;
+            }
+            .timer-display {
+                font-size: 2.5rem;
+                padding: 0.7rem 1.2rem;
             }
         }
     </style>
@@ -364,6 +385,9 @@
         <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="0.5" oninput="setVolume(this.value)">
     </div>
 
+    <!-- Timer Display -->
+    <div id="timerDisplay" class="timer-display">02:00</div>
+
     <div class="game-container">
         <!-- Player 1 Card -->
         <div class="player-card">
@@ -385,7 +409,7 @@
                 <div class="key" onclick="appendNumber(1, '0')">0</div>
                 <div class="key delete-key" onclick="deleteLastNumber(1)">删除</div>
             </div>
-            <button onclick="checkAnswer(1)">提交答案</button>
+            <button id="submitButton1" onclick="checkAnswer(1)">提交答案</button>
         </div>
 
         <!-- Player 2 Card -->
@@ -408,7 +432,7 @@
                 <div class="key" onclick="appendNumber(2, '0')">0</div>
                 <div class="key delete-key" onclick="deleteLastNumber(2)">删除</div>
             </div>
-            <button onclick="checkAnswer(2)">提交答案</button>
+            <button id="submitButton2" onclick="checkAnswer(2)">提交答案</button>
         </div>
 
         <!-- Player 3 Card -->
@@ -431,7 +455,7 @@
                 <div class="key" onclick="appendNumber(3, '0')">0</div>
                 <div class="key delete-key" onclick="deleteLastNumber(3)">删除</div>
             </div>
-            <button onclick="checkAnswer(3)">提交答案</button>
+            <button id="submitButton3" onclick="checkAnswer(3)">提交答案</button>
         </div>
     </div>
 
@@ -445,9 +469,17 @@
             { score: 0, question: {}, id: 3 }
         ];
 
+        // Music related elements
         const backgroundMusic = document.getElementById('backgroundMusic');
         const musicToggleButton = document.getElementById('musicToggleButton');
         const volumeControl = document.getElementById('volumeControl');
+
+        // Timer related variables
+        const gameDuration = 120; // 2 minutes in seconds
+        let timeLeft = gameDuration;
+        let timerInterval;
+        let gameActive = false; // Flag to control game state (active or not)
+        const timerDisplay = document.getElementById('timerDisplay');
 
         // Set initial volume
         backgroundMusic.volume = volumeControl.value;
@@ -474,7 +506,6 @@
             document.getElementById(`score${playerIndex}`).textContent = player.score; // Update score display
             document.getElementById(`question${playerIndex}`).textContent = player.question.text; // Update question display
             document.getElementById(`answerInput${playerIndex}`).value = ''; // Clear the input field
-            // No focus needed here as input is readonly and handled by virtual keyboard
         }
 
         /**
@@ -482,14 +513,18 @@
          * @param {number} playerIndex - The 1-based index of the player.
          */
         function checkAnswer(playerIndex) {
+            // Only allow answering if the game is active
+            if (!gameActive) {
+                console.log(`玩家 ${playerIndex}: 游戏未开始或已结束。`);
+                return;
+            }
+
             const player = players[playerIndex - 1]; // Get player object
             const answerInput = document.getElementById(`answerInput${playerIndex}`);
             const userAnswer = parseInt(answerInput.value, 10); // Get user's answer and convert to integer
 
             // Check if the input is a valid number and not empty
             if (isNaN(userAnswer) || answerInput.value.trim() === '') {
-                // For a better user experience, you might show a temporary message on the UI
-                // instead of just logging to console.
                 console.log(`玩家 ${playerIndex}: 请输入一个有效的数字。`);
                 return;
             }
@@ -511,9 +546,10 @@
          * @param {string} number - The number string to append.
          */
         function appendNumber(playerIndex, number) {
+            if (!gameActive) return; // Only allow input if game is active
             const answerInput = document.getElementById(`answerInput${playerIndex}`);
-            // Limit input length to prevent excessively long numbers
-            if (answerInput.value.length < 3) { // Max 3 digits for answers up to 10x10 (max 100)
+            // Limit input length to prevent excessively long numbers (max 3 digits for answers up to 10x10=100)
+            if (answerInput.value.length < 3) {
                 answerInput.value += number;
             }
         }
@@ -523,6 +559,7 @@
          * @param {number} playerIndex - The 1-based index of the player.
          */
         function deleteLastNumber(playerIndex) {
+            if (!gameActive) return; // Only allow input if game is active
             const answerInput = document.getElementById(`answerInput${playerIndex}`);
             answerInput.value = answerInput.value.slice(0, -1); // Remove the last character
         }
@@ -559,6 +596,75 @@
         }
 
         /**
+         * Updates the countdown timer display.
+         */
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        /**
+         * Starts the countdown timer.
+         */
+        function startTimer() {
+            clearInterval(timerInterval); // Clear any existing timer
+            timeLeft = gameDuration; // Reset time
+            updateTimerDisplay(); // Update display immediately
+            gameActive = true; // Set game to active
+
+            // Enable inputs and buttons for all players
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById(`answerInput${i}`).disabled = false;
+                document.getElementById(`submitButton${i}`).disabled = false;
+            }
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    endGame();
+                }
+            }, 1000); // Update every second
+        }
+
+        /**
+         * Ends the game, stops the timer, and disables input/buttons.
+         */
+        function endGame() {
+            gameActive = false; // Set game to inactive
+            console.log("游戏结束!");
+            timerDisplay.textContent = "时间到!";
+
+            // Disable inputs and buttons for all players
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById(`answerInput${i}`).disabled = true;
+                document.getElementById(`submitButton${i}`).disabled = true;
+                document.getElementById(`question${i}`).textContent = "游戏结束!";
+            }
+
+            // Determine winner (optional, can be displayed in a modal or console)
+            let winner = players[0];
+            for (let i = 1; i < players.length; i++) {
+                if (players[i].score > winner.score) {
+                    winner = players[i];
+                } else if (players[i].score === winner.score) {
+                    // Handle ties, e.g., list all tied players
+                    winner = null; // Indicate a tie for simplicity
+                    break;
+                }
+            }
+
+            if (winner) {
+                console.log(`恭喜玩家 ${winner.id} 获胜，得分: ${winner.score}`);
+            } else {
+                console.log("游戏平局！");
+            }
+        }
+
+        /**
          * Starts a new game, resetting scores and generating initial questions for all players.
          * Also attempts to play music if not already playing.
          */
@@ -570,31 +676,23 @@
             });
             console.log("游戏开始！"); // Log to console for debugging
 
+            startTimer(); // Start the countdown timer
+
             // Attempt to play music when game starts, if not already playing
             if (backgroundMusic.paused) {
                 toggleMusic(); // Use the toggle function to handle play/pause logic and button text
             }
         }
 
-        // Optional: Add keyboard support for physical keyboards (Enter key to submit)
-        // This will allow users to use both virtual and physical keyboards.
-        document.addEventListener('keydown', (event) => {
-            // Check which player's input is currently focused (though inputs are readonly)
-            // Or, more robustly, if a player is "active" or has last interacted.
-            // For simplicity, we'll assume the user might still try to type.
-            // However, with readonly inputs, this is less relevant.
-            // The primary input method is now the virtual keyboard.
-            // We can keep this for the 'Enter' key submit.
-
-            // To map physical keyboard 'Enter' to the correct player,
-            // we'd need to know which player is currently "active" or has focus.
-            // Since inputs are readonly, direct focus is not reliable.
-            // A more complex game state management would be needed for this.
-            // For now, assume submission is via button or virtual keyboard.
+        // Initial setup when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            updateTimerDisplay(); // Show initial 02:00
+            // Disable inputs and buttons until game starts
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById(`answerInput${i}`).disabled = true;
+                document.getElementById(`submitButton${i}`).disabled = true;
+            }
         });
-
-        // Initialize the game when the page loads (optional, but good for initial state)
-        // window.onload = startGame; // Uncomment this line if you want the game to start immediately on page load.
     </script>
 </body>
 </html>
