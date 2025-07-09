@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数学乘法竞赛</title>
+    <!-- Tailwind CSS CDN for easy styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles to override or enhance Tailwind */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #e0f2f7; /* Lighter, more vibrant background */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh; /* Ensure full viewport height */
+            padding: 20px;
+            color: #263238; /* Darker, more pleasant text color */
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+
+        h1 {
+            font-size: 4.5rem; /* Increased title size */
+            font-weight: 900; /* Ultra bold */
+            color: #0d47a1; /* Deep blue title */
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.15); /* More pronounced shadow */
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.05em; /* Slightly tighter letter spacing */
+        }
+
+        .subtitle {
+            font-size: 1.5rem; /* Larger subtitle */
+            color: #455a64; /* Grayish blue subtitle */
+            margin-bottom: 2.5rem;
+            font-weight: 500;
+        }
+
+        .game-container {
+            display: flex;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+            gap: 2.5rem; /* More space between player cards */
+            justify-content: center;
+            margin-top: 2rem;
+            max-width: 1400px; /* Wider overall width */
+            width: 100%;
+        }
+
+        .player-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%); /* Subtle gradient background */
+            border-radius: 2rem; /* Even more rounded corners */
+            box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.2), 0 6px 10px -2px rgba(0, 0, 0, 0.1); /* Deeper, softer shadow */
+            padding: 2.5rem;
+            text-align: center;
+            flex: 1; /* Allow cards to grow and shrink */
+            min-width: 300px; /* Minimum width for cards */
+            max-width: 400px; /* Max width for cards */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Distribute space */
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Smooth hover effect */
+            border: 1px solid rgba(255, 255, 255, 0.6); /* Light border for depth */
+        }
+
+        .player-card:hover {
+            transform: translateY(-8px); /* More pronounced lift on hover */
+            box-shadow: 0 20px 35px -8px rgba(0, 0, 0, 0.25), 0 8px 12px -3px rgba(0, 0, 0, 0.15);
+        }
+
+        .player-card h2 {
+            font-size: 2rem; /* Larger player name */
+            font-weight: 800; /* Extra bold */
+            color: #1565c0; /* Stronger blue color */
+            margin-bottom: 1.25rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .player-card .score-display {
+            font-size: 1.8rem; /* Larger score text */
+            margin-bottom: 1rem;
+            color: #388e3c; /* Green for score */
+            font-weight: 700;
+        }
+
+        .player-card .question-text {
+            font-size: 2.5rem; /* Much larger question text */
+            font-weight: 900;
+            color: #d32f2f; /* Red for question */
+            margin-bottom: 1.5rem;
+            min-height: 3rem; /* Ensure consistent height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .player-card input {
+            width: calc(100% - 2rem); /* Full width minus padding */
+            padding: 0.85rem 1.25rem;
+            margin-top: 1rem;
+            border: 2px solid #a7d9f7; /* Light blue border */
+            border-radius: 1rem; /* More rounded input */
+            font-size: 1.5rem; /* Larger input font */
+            text-align: center;
+            font-weight: 600;
+            color: #212121;
+            background-color: #fcfdff;
+            transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        .player-card input:focus {
+            outline: none;
+            border-color: #1976d2; /* Darker blue focus border */
+            box-shadow: 0 0 0 4px rgba(25, 118, 210, 0.3); /* Blue glow on focus */
+        }
+
+        .player-card button {
+            background: linear-gradient(180deg, #4caf50 0%, #388e3c 100%); /* Green gradient button */
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 1rem; /* Rounded button */
+            cursor: pointer;
+            margin-top: 1.5rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            text-transform: uppercase; /* Uppercase text */
+            letter-spacing: 0.05em;
+        }
+
+        .player-card button:hover {
+            background: linear-gradient(180deg, #388e3c 0%, #2e7d32 100%); /* Darker green on hover */
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .player-card button:active {
+            transform: translateY(0) scale(1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .start-button {
+            background: linear-gradient(180deg, #607d8b 0%, #455a64 100%); /* Gray gradient button */
+            color: white;
+            padding: 1.25rem 2.5rem;
+            border: none;
+            border-radius: 1.25rem;
+            cursor: pointer;
+            margin-top: 3.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .start-button:hover {
+            background: linear-gradient(180deg, #455a64 0%, #37474f 100%); /* Darker gray on hover */
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+        }
+
+        .start-button:active {
+            transform: translateY(0) scale(1);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Virtual Keyboard Styles */
+        .keyboard {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 columns for numbers */
+            gap: 0.75rem; /* Space between keys */
+            margin-top: 1.5rem;
+            width: 100%; /* Make keyboard fill player card width */
+            max-width: 300px; /* Limit keyboard width */
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .key {
+            background-color: #e3f2fd; /* Light blue key background */
+            color: #1976d2; /* Dark blue key text */
+            padding: 1rem;
+            border-radius: 0.75rem;
+            font-size: 1.8rem; /* Larger key text */
+            font-weight: 700;
+            cursor: pointer;
+            user-select: none; /* Prevent text selection on tap */
+            transition: background-color 0.15s ease-in-out, transform 0.1s ease-in-out, box-shadow 0.15s ease-in-out;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            aspect-ratio: 1 / 1; /* Make keys square */
+        }
+
+        .key:hover {
+            background-color: #bbdefb; /* Slightly darker blue on hover */
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .key:active {
+            transform: translateY(0);
+            background-color: #90caf9; /* Even darker on active */
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .key.delete-key {
+            background-color: #ffcdd2; /* Red for delete key */
+            color: #c62828; /* Dark red text */
+            grid-column: span 2; /* Make delete key span 2 columns */
+        }
+
+        .key.delete-key:hover {
+            background-color: #ef9a9a;
+        }
+
+        .key.delete-key:active {
+            background-color: #e57373;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+            .game-container {
+                gap: 1.5rem;
+            }
+            .player-card {
+                padding: 2rem;
+            }
+            h1 {
+                font-size: 3.5rem; /* Adjust title size for tablets */
+            }
+            .subtitle {
+                font-size: 1.25rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .game-container {
+                flex-direction: column; /* Stack cards vertically on small screens */
+                align-items: center;
+                gap: 2rem;
+            }
+            .player-card {
+                max-width: 95%; /* Make cards wider on small screens */
+                min-width: unset; /* Remove min-width to allow more flexibility */
+                width: 100%; /* Take full width available */
+                padding: 1.5rem;
+            }
+            h1 {
+                font-size: 2.8rem; /* Adjust title size for mobile */
+            }
+            .subtitle {
+                font-size: 1rem;
+                text-align: center;
+            }
+            .player-card .question-text {
+                font-size: 2rem;
+            }
+            .player-card input {
+                font-size: 1.25rem;
+            }
+            .key {
+                font-size: 1.5rem;
+                padding: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1 class="text-center">数学乘法竞赛!</h1>
+    <p class="subtitle text-center">看谁答对的题目最多！</p>
+
+    <div class="game-container">
+        <!-- Player 1 Card -->
+        <div class="player-card">
+            <h2>玩家 1</h2>
+            <p class="score-display">分数: <span id="score1">0</span></p>
+            <p id="question1" class="question-text">请点击“开始新游戏”</p>
+            <input type="number" id="answerInput1" placeholder="你的答案" class="mt-4" readonly>
+            <!-- Virtual Keyboard for Player 1 -->
+            <div class="keyboard" id="keyboard1">
+                <div class="key" onclick="appendNumber(1, '1')">1</div>
+                <div class="key" onclick="appendNumber(1, '2')">2</div>
+                <div class="key" onclick="appendNumber(1, '3')">3</div>
+                <div class="key" onclick="appendNumber(1, '4')">4</div>
+                <div class="key" onclick="appendNumber(1, '5')">5</div>
+                <div class="key" onclick="appendNumber(1, '6')">6</div>
+                <div class="key" onclick="appendNumber(1, '7')">7</div>
+                <div class="key" onclick="appendNumber(1, '8')">8</div>
+                <div class="key" onclick="appendNumber(1, '9')">9</div>
+                <div class="key" onclick="appendNumber(1, '0')">0</div>
+                <div class="key delete-key" onclick="deleteLastNumber(1)">删除</div>
+            </div>
+            <button onclick="checkAnswer(1)">提交答案</button>
+        </div>
+
+        <!-- Player 2 Card -->
+        <div class="player-card">
+            <h2>玩家 2</h2>
+            <p class="score-display">分数: <span id="score2">0</span></p>
+            <p id="question2" class="question-text">请点击“开始新游戏”</p>
+            <input type="number" id="answerInput2" placeholder="你的答案" class="mt-4" readonly>
+            <!-- Virtual Keyboard for Player 2 -->
+            <div class="keyboard" id="keyboard2">
+                <div class="key" onclick="appendNumber(2, '1')">1</div>
+                <div class="key" onclick="appendNumber(2, '2')">2</div>
+                <div class="key" onclick="appendNumber(2, '3')">3</div>
+                <div class="key" onclick="appendNumber(2, '4')">4</div>
+                <div class="key" onclick="appendNumber(2, '5')">5</div>
+                <div class="key" onclick="appendNumber(2, '6')">6</div>
+                <div class="key" onclick="appendNumber(2, '7')">7</div>
+                <div class="key" onclick="appendNumber(2, '8')">8</div>
+                <div class="key" onclick="appendNumber(2, '9')">9</div>
+                <div class="key" onclick="appendNumber(2, '0')">0</div>
+                <div class="key delete-key" onclick="deleteLastNumber(2)">删除</div>
+            </div>
+            <button onclick="checkAnswer(2)">提交答案</button>
+        </div>
+
+        <!-- Player 3 Card -->
+        <div class="player-card">
+            <h2>玩家 3</h2>
+            <p class="score-display">分数: <span id="score3">0</span></p>
+            <p id="question3" class="question-text">请点击“开始新游戏”</p>
+            <input type="number" id="answerInput3" placeholder="你的答案" class="mt-4" readonly>
+            <!-- Virtual Keyboard for Player 3 -->
+            <div class="keyboard" id="keyboard3">
+                <div class="key" onclick="appendNumber(3, '1')">1</div>
+                <div class="key" onclick="appendNumber(3, '2')">2</div>
+                <div class="key" onclick="appendNumber(3, '3')">3</div>
+                <div class="key" onclick="appendNumber(3, '4')">4</div>
+                <div class="key" onclick="appendNumber(3, '5')">5</div>
+                <div class="key" onclick="appendNumber(3, '6')">6</div>
+                <div class="key" onclick="appendNumber(3, '7')">7</div>
+                <div class="key" onclick="appendNumber(3, '8')">8</div>
+                <div class="key" onclick="appendNumber(3, '9')">9</div>
+                <div class="key" onclick="appendNumber(3, '0')">0</div>
+                <div class="key delete-key" onclick="deleteLastNumber(3)">删除</div>
+            </div>
+            <button onclick="checkAnswer(3)">提交答案</button>
+        </div>
+    </div>
+
+    <button onclick="startGame()" class="start-button">开始新游戏</button>
+
+    <script>
+        // Array to store player data: score and current question details
+        const players = [
+            { score: 0, question: {}, id: 1 },
+            { score: 0, question: {}, id: 2 },
+            { score: 0, question: {}, id: 3 }
+        ];
+
+        /**
+         * Generates a new multiplication question (num1 x num2) where both numbers are between 1 and 10.
+         * @returns {object} An object containing the question text and its correct answer.
+         */
+        function generateQuestion() {
+            const num1 = Math.floor(Math.random() * 10) + 1; // Generates a random number from 1 to 10
+            const num2 = Math.floor(Math.random() * 10) + 1; // Generates a random number from 1 to 10
+            return {
+                text: `${num1}x${num2}=`, // Question text using 'x' and '='
+                answer: num1 * num2 // Correct answer
+            };
+        }
+
+        /**
+         * Updates the UI for a specific player (score, question text, and clears input).
+         * @param {number} playerIndex - The 1-based index of the player (1, 2, or 3).
+         */
+        function updatePlayerUI(playerIndex) {
+            const player = players[playerIndex - 1]; // Get player object (array is 0-indexed)
+            document.getElementById(`score${playerIndex}`).textContent = player.score; // Update score display
+            document.getElementById(`question${playerIndex}`).textContent = player.question.text; // Update question display
+            document.getElementById(`answerInput${playerIndex}`).value = ''; // Clear the input field
+            // No focus needed here as input is readonly and handled by virtual keyboard
+        }
+
+        /**
+         * Checks the answer submitted by a player.
+         * @param {number} playerIndex - The 1-based index of the player.
+         */
+        function checkAnswer(playerIndex) {
+            const player = players[playerIndex - 1]; // Get player object
+            const answerInput = document.getElementById(`answerInput${playerIndex}`);
+            const userAnswer = parseInt(answerInput.value, 10); // Get user's answer and convert to integer
+
+            // Check if the input is a valid number and not empty
+            if (isNaN(userAnswer) || answerInput.value.trim() === '') {
+                // For a better user experience, you might show a temporary message on the UI
+                // instead of just logging to console.
+                console.log(`玩家 ${playerIndex}: 请输入一个有效的数字。`);
+                return;
+            }
+
+            // Compare user's answer with the correct answer
+            if (userAnswer === player.question.answer) {
+                player.score++; // Increment score if correct
+                player.question = generateQuestion(); // Generate a new question
+            } else {
+                // Generate a new question even if incorrect
+                player.question = generateQuestion();
+            }
+            updatePlayerUI(playerIndex); // Update the player's UI
+        }
+
+        /**
+         * Appends a number to the player's answer input field.
+         * @param {number} playerIndex - The 1-based index of the player.
+         * @param {string} number - The number string to append.
+         */
+        function appendNumber(playerIndex, number) {
+            const answerInput = document.getElementById(`answerInput${playerIndex}`);
+            // Limit input length to prevent excessively long numbers
+            if (answerInput.value.length < 3) { // Max 3 digits for answers up to 10x10 (max 100)
+                answerInput.value += number;
+            }
+        }
+
+        /**
+         * Deletes the last character from the player's answer input field.
+         * @param {number} playerIndex - The 1-based index of the player.
+         */
+        function deleteLastNumber(playerIndex) {
+            const answerInput = document.getElementById(`answerInput${playerIndex}`);
+            answerInput.value = answerInput.value.slice(0, -1); // Remove the last character
+        }
+
+        /**
+         * Starts a new game, resetting scores and generating initial questions for all players.
+         */
+        function startGame() {
+            players.forEach((player, index) => {
+                player.score = 0; // Reset score
+                player.question = generateQuestion(); // Generate first question
+                updatePlayerUI(player.id); // Update UI for each player
+            });
+            console.log("游戏开始！"); // Log to console for debugging
+        }
+
+        // Optional: Add keyboard support for physical keyboards (Enter key to submit)
+        // This will allow users to use both virtual and physical keyboards.
+        document.addEventListener('keydown', (event) => {
+            // Check which player's input is currently focused (though inputs are readonly)
+            // Or, more robustly, if a player is "active" or has last interacted.
+            // For simplicity, we'll assume the user might still try to type.
+            // However, with readonly inputs, this is less relevant.
+            // The primary input method is now the virtual keyboard.
+            // We can keep this for the 'Enter' key submit.
+
+            // To map physical keyboard 'Enter' to the correct player,
+            // we'd need to know which player is currently "active" or has focus.
+            // Since inputs are readonly, direct focus is not reliable.
+            // A more complex game state management would be needed for this.
+            // For now, assume submission is via button or virtual keyboard.
+        });
+
+        // Initialize the game when the page loads (optional, but good for initial state)
+        // window.onload = startGame; // Uncomment this line if you want the game to start immediately on page load.
+    </script>
+</body>
+</html>
