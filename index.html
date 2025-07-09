@@ -141,6 +141,7 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             text-transform: uppercase; /* Uppercase text */
             letter-spacing: 0.05em;
+            width: 100%; /* Ensure button takes full width of its parent */
         }
 
         .player-card button:hover {
@@ -168,6 +169,7 @@
             box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
             text-transform: uppercase;
             letter-spacing: 0.08em;
+            max-width: 400px; /* Limit max width for aesthetic balance on large screens */
         }
 
         .start-button:hover {
@@ -647,20 +649,21 @@
 
             // Determine winner (optional, can be displayed in a modal or console)
             let winner = players[0];
+            let isTie = false;
             for (let i = 1; i < players.length; i++) {
                 if (players[i].score > winner.score) {
                     winner = players[i];
+                    isTie = false; // New winner, reset tie flag
                 } else if (players[i].score === winner.score) {
-                    // Handle ties, e.g., list all tied players
-                    winner = null; // Indicate a tie for simplicity
-                    break;
+                    isTie = true; // Found a tie
                 }
             }
 
-            if (winner) {
-                console.log(`恭喜玩家 ${winner.id} 获胜，得分: ${winner.score}`);
+            if (isTie) {
+                let tiedPlayers = players.filter(p => p.score === winner.score).map(p => `玩家 ${p.id}`);
+                console.log(`游戏平局！获胜玩家: ${tiedPlayers.join(' 和 ')}，得分: ${winner.score}`);
             } else {
-                console.log("游戏平局！");
+                console.log(`恭喜玩家 ${winner.id} 获胜，得分: ${winner.score}`);
             }
         }
 
