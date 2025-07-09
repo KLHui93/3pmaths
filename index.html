@@ -669,14 +669,35 @@
         players.forEach(player => {
             // Event listeners for virtual keyboard buttons
             player.keyboardButtons.forEach(button => {
-                button.addEventListener('click', () => {
+                // Changed from 'click' to 'touchstart' for better multi-touch responsiveness
+                button.addEventListener('touchstart', (event) => {
+                    event.preventDefault(); // Prevent default touch behaviors like zooming/scrolling
                     const value = button.dataset.value; // Get numeric value
                     const action = button.dataset.action; // Get action (backspace/clear)
                     handleKeyboardInput(player, value || action); // Pass to handler
                 });
+                // Optionally keep 'click' for mouse users or as a fallback, but 'touchstart' is primary for touch
+                button.addEventListener('click', (event) => {
+                    // Only process click if it wasn't already handled by touchstart (e.g., for mouse users)
+                    if (event.pointerType === 'mouse' || !event.isTrusted) { // isTrusted checks if it's a real user event
+                        const value = button.dataset.value;
+                        const action = button.dataset.action;
+                        handleKeyboardInput(player, value || action);
+                    }
+                });
             });
             // Event listener for the "Submit Answer" button
-            player.submitButton.addEventListener('click', () => submitAnswer(player));
+            // Changed from 'click' to 'touchstart' for better multi-touch responsiveness
+            player.submitButton.addEventListener('touchstart', (event) => {
+                event.preventDefault(); // Prevent default touch behaviors
+                submitAnswer(player);
+            });
+            // Optionally keep 'click' for mouse users or as a fallback
+            player.submitButton.addEventListener('click', (event) => {
+                if (event.pointerType === 'mouse' || !event.isTrusted) {
+                    submitAnswer(player);
+                }
+            });
 
             // Allow submitting answer by pressing Enter key when input field is focused
             player.answerInput.addEventListener('keypress', (event) => {
