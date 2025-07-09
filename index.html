@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,193 +8,208 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Custom styles to override or enhance Tailwind */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap');
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #e0f2f7; /* Lighter, more vibrant background */
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2f7 100%); /* Soft, inviting gradient background */
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh; /* Ensure full viewport height */
             padding: 20px;
-            color: #263238; /* Darker, more pleasant text color */
+            color: #263238; /* Darker text color */
             overflow-x: hidden; /* Prevent horizontal scroll */
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
         }
 
         h1 {
-            font-size: 5.5rem; /* Increased title size for more impact */
+            font-size: clamp(3.5rem, 8vw, 7rem); /* Responsive title size: min 3.5rem, max 7rem, scales with viewport width */
             font-weight: 900; /* Ultra bold */
             color: #0d47a1; /* Deep blue title */
-            text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2); /* More pronounced shadow */
+            text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.25); /* More pronounced shadow */
             margin-bottom: 1.5rem;
             letter-spacing: -0.05em; /* Slightly tighter letter spacing */
+            line-height: 1; /* Ensure single line title */
+            text-align: center;
         }
 
         .subtitle {
-            font-size: 1.5rem; /* Larger subtitle */
+            font-size: clamp(1.2rem, 2.5vw, 2rem); /* Responsive subtitle size */
             color: #455a64; /* Grayish blue subtitle */
             margin-bottom: 2.5rem;
             font-weight: 500;
+            text-align: center;
         }
 
         .timer-display {
-            font-size: 3.5rem; /* Large timer display */
+            font-size: clamp(2.5rem, 6vw, 5rem); /* Responsive timer size */
             font-weight: 800;
             color: #d32f2f; /* Red color for urgency */
             background-color: #fff;
-            padding: 1rem 2rem;
+            padding: 1.2rem 2.5rem; /* Increased padding */
             border-radius: 1.5rem;
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
-            margin-bottom: 2rem;
-            min-width: 200px; /* Ensure consistent width */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            margin-bottom: 2.5rem;
+            min-width: 250px; /* Ensure consistent width */
             text-align: center;
+            box-sizing: border-box;
+            line-height: 1; /* Compact line height */
         }
 
         .game-container {
             display: flex;
             flex-wrap: wrap; /* Allow wrapping on smaller screens */
-            gap: 2.5rem; /* More space between player cards */
+            gap: 2.5rem; /* Space between player cards */
             justify-content: center;
             margin-top: 2rem;
-            max-width: 1400px; /* Wider overall width */
+            max-width: 1800px; /* Wider overall width for 3840x2160 */
             width: 100%;
+            box-sizing: border-box;
         }
 
         .player-card {
             background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%); /* Subtle gradient background */
-            border-radius: 2rem; /* Even more rounded corners */
-            box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.2), 0 6px 10px -2px rgba(0, 0, 0, 0.1); /* Deeper, softer shadow */
-            padding: 2.5rem;
+            border-radius: 2.5rem; /* More rounded corners */
+            box-shadow: 0 20px 30px -5px rgba(0, 0, 0, 0.25), 0 8px 12px -3px rgba(0, 0, 0, 0.1); /* Deeper, softer shadow */
+            padding: 3rem; /* Increased padding */
             text-align: center;
             flex: 1; /* Allow cards to grow and shrink */
-            min-width: 300px; /* Minimum width for cards */
-            max-width: 400px; /* Max width for cards */
+            min-width: 380px; /* Minimum width for cards */
+            max-width: 500px; /* Max width for cards to prevent excessive stretching */
             display: flex;
             flex-direction: column;
             justify-content: space-between; /* Distribute space */
             transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Smooth hover effect */
             border: 1px solid rgba(255, 255, 255, 0.6); /* Light border for depth */
+            box-sizing: border-box;
         }
 
         .player-card:hover {
-            transform: translateY(-8px); /* More pronounced lift on hover */
-            box-shadow: 0 20px 35px -8px rgba(0, 0, 0, 0.25), 0 8px 12px -3px rgba(0, 0, 0, 0.15);
+            transform: translateY(-12px); /* More pronounced lift on hover */
+            box-shadow: 0 25px 40px -10px rgba(0, 0, 0, 0.3), 0 10px 15px -4px rgba(0, 0, 0, 0.15);
         }
 
         .player-card h2 {
-            font-size: 2rem; /* Larger player name */
+            font-size: clamp(1.8rem, 3.5vw, 2.5rem); /* Responsive player name */
             font-weight: 800; /* Extra bold */
             color: #1565c0; /* Stronger blue color */
-            margin-bottom: 1.25rem;
+            margin-bottom: 1.5rem;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
         }
 
         .player-card .score-display {
-            font-size: 1.8rem; /* Larger score text */
-            margin-bottom: 1rem;
+            font-size: clamp(1.6rem, 3vw, 2.2rem); /* Responsive score text */
+            margin-bottom: 1.2rem;
             color: #388e3c; /* Green for score */
             font-weight: 700;
         }
 
         .player-card .question-text {
-            font-size: 2.5rem; /* Much larger question text */
+            font-size: clamp(2.5rem, 5vw, 3.5rem); /* Responsive question text */
             font-weight: 900;
             color: #d32f2f; /* Red for question */
-            margin-bottom: 1.5rem;
-            min-height: 3rem; /* Ensure consistent height */
+            margin-bottom: 2rem;
+            min-height: 4rem; /* Ensure consistent height for question */
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         .player-card input {
-            width: calc(100% - 2rem); /* Full width minus padding */
-            padding: 0.85rem 1.25rem;
+            width: 100%; /* Full width within card padding */
+            padding: 1.2rem 1.8rem; /* Increased padding */
             margin-top: 1rem;
             border: 2px solid #a7d9f7; /* Light blue border */
-            border-radius: 1rem; /* More rounded input */
-            font-size: 1.5rem; /* Larger input font */
+            border-radius: 1.2rem; /* More rounded input */
+            font-size: clamp(1.5rem, 2.8vw, 2rem); /* Responsive input font */
             text-align: center;
             font-weight: 600;
             color: #212121;
             background-color: #fcfdff;
             transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            box-sizing: border-box; /* Include padding and border in width */
         }
 
         .player-card input:focus {
             outline: none;
             border-color: #1976d2; /* Darker blue focus border */
-            box-shadow: 0 0 0 4px rgba(25, 118, 210, 0.3); /* Blue glow on focus */
+            box-shadow: 0 0 0 5px rgba(25, 118, 210, 0.4); /* Blue glow on focus */
         }
 
-        /* Submit buttons within player cards */
-        .player-card button {
+        /* Submit buttons within player cards - UNIFORM SIZE */
+        .player-card .submit-button {
             background: linear-gradient(180deg, #4caf50 0%, #388e3c 100%); /* Green gradient button */
             color: white;
-            padding: 1rem 2rem;
+            padding: 1.4rem 2.8rem; /* Increased padding for larger touch target */
             border: none;
-            border-radius: 1rem; /* Rounded button */
+            border-radius: 1.2rem; /* Rounded button */
             cursor: pointer;
-            margin-top: 1.5rem;
-            font-size: 1.25rem;
-            font-weight: 700;
-            transition: all 0.2s ease-in-out;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            text-transform: uppercase; /* Uppercase text */
-            letter-spacing: 0.05em;
-            width: 100%; /* Ensure button takes full width of its parent */
-            box-sizing: border-box; /* Include padding and border in the element's total width and height */
-        }
-
-        .player-card button:hover {
-            background: linear-gradient(180deg, #388e3c 0%, #2e7d32 100%); /* Darker green on hover */
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .player-card button:active {
-            transform: translateY(0) scale(1);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Start New Game button */
-        .start-button {
-            background: linear-gradient(180deg, #607d8b 0%, #455a64 100%); /* Gray gradient button */
-            color: white;
-            padding: 1.25rem 2.5rem;
-            border: none;
-            border-radius: 1.25rem;
-            cursor: pointer;
-            margin-top: 3.5rem;
-            font-size: 1.5rem;
+            margin-top: 2rem; /* Increased margin */
+            font-size: clamp(1.2rem, 2.5vw, 1.6rem); /* Responsive font size */
             font-weight: 700;
             transition: all 0.2s ease-in-out;
             box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+            text-transform: uppercase; /* Uppercase text */
+            letter-spacing: 0.05em;
+            width: 100%; /* Make button take full width of its parent */
+            max-width: 300px; /* Limit max width for consistency */
+            margin-left: auto; /* Center the button */
+            margin-right: auto; /* Center the button */
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+        }
+
+        .player-card .submit-button:hover {
+            background: linear-gradient(180deg, #388e3c 0%, #2e7d32 100%); /* Darker green on hover */
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+        }
+
+        .player-card .submit-button:active {
+            transform: translateY(0) scale(1);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Start New Game button - UNIFORM SIZE */
+        .start-button {
+            background: linear-gradient(180deg, #607d8b 0%, #455a64 100%); /* Gray gradient button */
+            color: white;
+            padding: 1.8rem 3.5rem; /* Increased padding */
+            border: none;
+            border-radius: 1.8rem; /* More rounded */
+            cursor: pointer;
+            margin-top: 4rem; /* Increased margin */
+            font-size: clamp(1.5rem, 3vw, 2rem); /* Responsive font size */
+            font-weight: 700;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
             text-transform: uppercase;
             letter-spacing: 0.08em;
-            max-width: 400px; /* Limit max width for aesthetic balance on large screens */
+            max-width: 500px; /* Limit max width for aesthetic balance on large screens */
+            width: 100%; /* Ensure it takes full available width up to max-width */
             box-sizing: border-box; /* Include padding and border in the element's total width and height */
         }
 
         .start-button:hover {
             background: linear-gradient(180deg, #455a64 0%, #37474f 100%); /* Darker gray on hover */
-            transform: translateY(-4px) scale(1.03);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
         }
 
         .start-button:active {
             transform: translateY(0) scale(1);
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
-        /* Virtual Keyboard Styles */
+        /* Virtual Keyboard Styles - ALL KEYS UNIFORM SIZE */
         .keyboard {
             display: grid;
             grid-template-columns: repeat(3, 1fr); /* 3 columns for numbers */
-            gap: 0.75rem; /* Space between keys */
-            margin-top: 1.5rem;
+            gap: 1rem; /* Increased space between keys */
+            margin-top: 2rem; /* Increased margin */
             width: 100%; /* Make keyboard fill player card width */
-            max-width: 300px; /* Limit keyboard width to keep keys from becoming too large */
+            max-width: 380px; /* Limit keyboard width to keep keys from becoming too large */
             margin-left: auto;
             margin-right: auto;
             box-sizing: border-box; /* Ensure padding/border are included in width */
@@ -203,76 +218,78 @@
         .key {
             background-color: #e3f2fd; /* Light blue key background */
             color: #1976d2; /* Dark blue key text */
-            padding: 1rem;
-            border-radius: 0.75rem;
-            font-size: 1.8rem; /* Larger key text */
+            padding: 1.5rem; /* Increased padding for larger touch target */
+            border-radius: 1rem; /* More rounded */
+            font-size: clamp(1.5rem, 3vw, 2.2rem); /* Responsive key text size */
             font-weight: 700;
             cursor: pointer;
             user-select: none; /* Prevent text selection on tap */
             transition: background-color 0.15s ease-in-out, transform 0.1s ease-in-out, box-shadow 0.15s ease-in-out;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.18);
             display: flex;
             align-items: center;
             justify-content: center;
-            aspect-ratio: 1 / 1; /* Make keys square */
+            aspect-ratio: 1 / 1; /* Make keys perfectly square */
             box-sizing: border-box; /* Include padding and border in the element's total width and height */
         }
 
         .key:hover {
             background-color: #bbdefb; /* Slightly darker blue on hover */
-            transform: translateY(-2px);
-            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
         }
 
         .key:active {
             transform: translateY(0);
             background-color: #90caf9; /* Even darker on active */
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
         }
 
-        .key.delete-key {
-            background-color: #ffcdd2; /* Red for delete key */
+        .key.delete-key, .key.clear-key {
+            background-color: #ffcdd2; /* Red for delete/clear keys */
             color: #c62828; /* Dark red text */
-            grid-column: span 2; /* Make delete key span 2 columns */
         }
 
-        .key.delete-key:hover {
+        .key.delete-key:hover, .key.clear-key:hover {
             background-color: #ef9a9a;
         }
 
-        .key.delete-key:active {
+        .key.delete-key:active, .key.clear-key:active {
             background-color: #e57373;
         }
 
-        /* Music Controls */
+        /* Music Controls - UNIFORM SIZE */
         .music-controls {
-            margin-top: 2rem;
+            margin-top: 2.5rem;
             display: flex;
+            flex-wrap: wrap; /* Allow wrapping on small screens */
             align-items: center;
-            gap: 1rem;
+            gap: 1.5rem; /* Increased gap */
             background-color: #ffffff;
-            padding: 0.75rem 1.5rem;
-            border-radius: 1rem;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 1.2rem 2.2rem; /* Increased padding */
+            border-radius: 1.5rem;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
             box-sizing: border-box;
+            justify-content: center; /* Center items when wrapped */
         }
 
         .music-controls button {
             background-color: #42a5f5; /* Blue for music control */
             color: white;
-            padding: 0.85rem 1.5rem; /* Slightly increased padding */
+            padding: 1rem 1.8rem; /* Increased padding */
             border: none;
-            border-radius: 0.75rem;
+            border-radius: 1rem;
             cursor: pointer;
-            font-size: 1.125rem; /* Slightly increased font size */
+            font-size: clamp(1rem, 2vw, 1.4rem); /* Responsive font size */
             font-weight: 600;
             transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
             box-sizing: border-box; /* Include padding and border in the element's total width and height */
+            min-width: 130px; /* Ensure a minimum width for consistency */
         }
 
         .music-controls button:hover {
             background-color: #2196f3;
-            transform: translateY(-1px);
+            transform: translateY(-2px);
         }
 
         .music-controls button:active {
@@ -280,54 +297,45 @@
         }
 
         .music-controls input[type="range"] {
-            width: 100px;
+            width: clamp(100px, 15vw, 180px); /* Responsive width for slider */
             -webkit-appearance: none; /* Remove default styling */
             appearance: none;
-            height: 8px;
+            height: 12px; /* Thicker track */
             background: #bbdefb; /* Light blue track */
-            border-radius: 5px;
+            border-radius: 6px;
             outline: none;
-            opacity: 0.7;
+            opacity: 0.8;
             transition: opacity .2s;
         }
 
         .music-controls input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 20px;
-            height: 20px;
+            width: 28px; /* Larger thumb */
+            height: 28px; /* Larger thumb */
             background: #1976d2; /* Dark blue thumb */
             border-radius: 50%;
             cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
 
         .music-controls input[type="range"]::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
+            width: 28px;
+            height: 28px;
             background: #1976d2;
             border-radius: 50%;
             cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
 
         /* Responsive adjustments */
-        @media (max-width: 1024px) {
-            .game-container {
-                gap: 1.5rem;
-            }
+        @media (max-width: 1200px) {
             .player-card {
-                padding: 2rem;
+                min-width: 300px;
+                max-width: 45%; /* Allow two cards per row on larger tablets */
             }
-            h1 {
-                font-size: 4rem; /* Adjust title size for tablets */
-            }
-            .subtitle {
-                font-size: 1.25rem;
-            }
-            .timer-display {
-                font-size: 3rem;
-                padding: 0.8rem 1.5rem;
+            .keyboard {
+                max-width: 320px;
             }
         }
 
@@ -341,39 +349,93 @@
                 max-width: 95%; /* Make cards wider on small screens */
                 min-width: unset; /* Remove min-width to allow more flexibility */
                 width: 100%; /* Take full width available */
-                padding: 1.5rem;
-            }
-            h1 {
-                font-size: 3.2rem; /* Adjust title size for mobile */
-            }
-            .subtitle {
-                font-size: 1rem;
-                text-align: center;
+                padding: 1.8rem;
             }
             .player-card .question-text {
-                font-size: 2rem;
+                font-size: clamp(2rem, 6vw, 3rem);
             }
             .player-card input {
-                font-size: 1.25rem;
+                font-size: clamp(1.2rem, 3vw, 1.8rem);
+            }
+            .keyboard {
+                max-width: 300px;
+                gap: 0.8rem;
             }
             .key {
-                font-size: 1.5rem;
-                padding: 0.8rem;
+                font-size: clamp(1.4rem, 4vw, 2rem);
+                padding: 1rem;
+            }
+            .player-card .submit-button {
+                font-size: clamp(1rem, 2.5vw, 1.4rem);
+                padding: 1.2rem 2.2rem;
             }
             .music-controls {
                 flex-direction: column;
-                gap: 0.75rem;
-                padding: 0.75rem 1rem;
+                gap: 1rem;
+                padding: 1rem 1.5rem;
             }
             .music-controls button {
                 width: 100%; /* Ensure music buttons also take full width on small screens */
+                min-width: unset;
             }
             .music-controls input[type="range"] {
                 width: 80%;
             }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            h1 {
+                font-size: clamp(2.5rem, 10vw, 3.5rem);
+            }
+            .subtitle {
+                font-size: clamp(1rem, 3vw, 1.2rem);
+            }
             .timer-display {
-                font-size: 2.5rem;
-                padding: 0.7rem 1.2rem;
+                font-size: clamp(2rem, 8vw, 3rem);
+                padding: 0.8rem 1.5rem;
+            }
+            .player-card {
+                padding: 1.2rem;
+            }
+            .player-card h2 {
+                font-size: clamp(1.5rem, 4vw, 2rem);
+            }
+            .player-card .score-display {
+                font-size: clamp(1.3rem, 3.5vw, 1.8rem);
+            }
+            .player-card .question-text {
+                font-size: clamp(1.8rem, 7vw, 2.5rem);
+                min-height: 3rem;
+            }
+            .player-card input {
+                font-size: clamp(1rem, 2.5vw, 1.5rem);
+                padding: 0.8rem 1.2rem;
+            }
+            .keyboard {
+                max-width: 260px;
+                gap: 0.6rem;
+            }
+            .key {
+                font-size: clamp(1.2rem, 5vw, 1.8rem);
+                padding: 0.8rem;
+            }
+            .player-card .submit-button {
+                font-size: clamp(0.9rem, 2.2vw, 1.2rem);
+                padding: 1rem 1.8rem;
+            }
+            .start-button {
+                font-size: clamp(1.1rem, 2.8vw, 1.5rem);
+                padding: 1.2rem 2.5rem;
+            }
+            .music-controls {
+                padding: 0.8rem 1.2rem;
+            }
+            .music-controls button {
+                font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+                padding: 0.6rem 1rem;
             }
         }
     </style>
@@ -421,8 +483,9 @@
                 <div class="key" onclick="appendNumber(1, '9')">9</div>
                 <div class="key" onclick="appendNumber(1, '0')">0</div>
                 <div class="key delete-key" onclick="deleteLastNumber(1)">删除</div>
+                <div class="key clear-key" onclick="clearInput(1)">清空</div>
             </div>
-            <button id="submitButton1" onclick="checkAnswer(1)">提交答案</button>
+            <button id="submitButton1" class="submit-button" onclick="checkAnswer(1)">提交答案</button>
         </div>
 
         <!-- Player 2 Card -->
@@ -444,8 +507,9 @@
                 <div class="key" onclick="appendNumber(2, '9')">9</div>
                 <div class="key" onclick="appendNumber(2, '0')">0</div>
                 <div class="key delete-key" onclick="deleteLastNumber(2)">删除</div>
+                <div class="key clear-key" onclick="clearInput(2)">清空</div>
             </div>
-            <button id="submitButton2" onclick="checkAnswer(2)">提交答案</button>
+            <button id="submitButton2" class="submit-button" onclick="checkAnswer(2)">提交答案</button>
         </div>
 
         <!-- Player 3 Card -->
@@ -467,12 +531,24 @@
                 <div class="key" onclick="appendNumber(3, '9')">9</div>
                 <div class="key" onclick="appendNumber(3, '0')">0</div>
                 <div class="key delete-key" onclick="deleteLastNumber(3)">删除</div>
+                <div class="key clear-key" onclick="clearInput(3)">清空</div>
             </div>
-            <button id="submitButton3" onclick="checkAnswer(3)">提交答案</button>
+            <button id="submitButton3" class="submit-button" onclick="checkAnswer(3)">提交答案</button>
         </div>
     </div>
 
     <button onclick="startGame()" class="start-button">开始新游戏</button>
+
+    <!-- Winner Modal -->
+    <div id="winnerModal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full text-center transform scale-95 opacity-0 transition-all duration-300 ease-out" id="modalContent">
+            <h3 class="text-4xl font-bold text-blue-700 mb-4" id="modalTitle"></h3>
+            <p class="text-2xl text-gray-700 mb-6" id="modalMessage"></p>
+            <button onclick="closeModal()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl text-xl transition-colors duration-200">
+                确定
+            </button>
+        </div>
+    </div>
 
     <script>
         // Array to store player data: score and current question details
@@ -493,6 +569,12 @@
         let timerInterval;
         let gameActive = false; // Flag to control game state (active or not)
         const timerDisplay = document.getElementById('timerDisplay');
+
+        // Modal elements
+        const winnerModal = document.getElementById('winnerModal');
+        const modalContent = document.getElementById('modalContent');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMessage = document.getElementById('modalMessage');
 
         // Set initial volume
         backgroundMusic.volume = volumeControl.value;
@@ -538,6 +620,8 @@
 
             // Check if the input is a valid number and not empty
             if (isNaN(userAnswer) || answerInput.value.trim() === '') {
+                // For a better user experience, you might show a temporary message on the UI
+                // instead of just logging to console.
                 console.log(`玩家 ${playerIndex}: 请输入一个有效的数字。`);
                 return;
             }
@@ -578,6 +662,15 @@
         }
 
         /**
+         * Clears the player's answer input field.
+         * @param {number} playerIndex - The 1-based index of the player.
+         */
+        function clearInput(playerIndex) {
+            if (!gameActive) return; // Only allow input if game is active
+            document.getElementById(`answerInput${playerIndex}`).value = '';
+        }
+
+        /**
          * Toggles the background music play/pause state.
          */
         function toggleMusic() {
@@ -590,8 +683,8 @@
                     .catch(error => {
                         console.error("音乐播放失败:", error);
                         musicToggleButton.textContent = '播放音乐 (需用户交互)';
-                        // Inform user that autoplay might be blocked
-                        alert("浏览器可能阻止了自动播放。请点击按钮播放音乐。");
+                        // Using a custom modal instead of alert
+                        showModal("音乐播放提示", "浏览器可能阻止了自动播放。请点击按钮播放音乐。");
                     });
             } else {
                 backgroundMusic.pause();
@@ -658,24 +751,58 @@
                 document.getElementById(`question${i}`).textContent = "游戏结束!";
             }
 
-            // Determine winner (optional, can be displayed in a modal or console)
-            let winner = players[0];
-            let isTie = false;
-            for (let i = 1; i < players.length; i++) {
-                if (players[i].score > winner.score) {
-                    winner = players[i];
-                    isTie = false; // New winner, reset tie flag
-                } else if (players[i].score === winner.score) {
-                    isTie = true; // Found a tie
+            // Determine winner
+            let maxScore = -1;
+            players.forEach(player => {
+                if (player.score > maxScore) {
+                    maxScore = player.score;
                 }
-            }
+            });
 
-            if (isTie) {
-                let tiedPlayers = players.filter(p => p.score === winner.score).map(p => `玩家 ${p.id}`);
-                console.log(`游戏平局！获胜玩家: ${tiedPlayers.join(' 和 ')}，得分: ${winner.score}`);
+            const winners = players.filter(player => player.score === maxScore);
+
+            let titleText;
+            let messageText;
+
+            if (winners.length === 1) {
+                titleText = `恭喜玩家 ${winners[0].id} 获胜!`;
+                messageText = `得分: ${winners[0].score}`;
+                console.log(`${titleText} ${messageText}`);
             } else {
-                console.log(`恭喜玩家 ${winner.id} 获胜，得分: ${winner.score}`);
+                const tiedPlayers = winners.map(p => `玩家 ${p.id}`).join(' 和 ');
+                titleText = `游戏平局!`;
+                messageText = `获胜玩家: ${tiedPlayers}，得分: ${maxScore}`;
+                console.log(`${titleText} ${messageText}`);
             }
+            showModal(titleText, messageText);
+        }
+
+        /**
+         * Displays a custom modal with a title and message.
+         * @param {string} title - The title for the modal.
+         * @param {string} message - The message content for the modal.
+         */
+        function showModal(title, message) {
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            winnerModal.classList.remove('hidden');
+            // Animate modal entry
+            setTimeout(() => {
+                modalContent.classList.remove('opacity-0', 'scale-95');
+                modalContent.classList.add('opacity-100', 'scale-100');
+            }, 10);
+        }
+
+        /**
+         * Hides the custom modal.
+         */
+        function closeModal() {
+            // Animate modal exit
+            modalContent.classList.remove('opacity-100', 'scale-100');
+            modalContent.classList.add('opacity-0', 'scale-95');
+            setTimeout(() => {
+                winnerModal.classList.add('hidden');
+            }, 300); // Match transition duration
         }
 
         /**
