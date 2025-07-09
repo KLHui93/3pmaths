@@ -3,794 +3,515 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>数学乘法竞赛</title>
-    <!-- Tailwind CSS CDN for easy styling -->
+    <title>乘法竞赛游戏</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter for a clean look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons (play/pause, volume) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Custom styles to override or enhance Tailwind */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap');
-
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%); /* Light blue to teal gradient */
+            background: linear-gradient(135deg, #a8c0ff, #3f2b96); /* 渐变背景 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            color: #fff;
+            overflow-x: hidden; /* 防止水平滚动 */
+        }
+
+        .game-container {
+            background-color: rgba(255, 255, 255, 0.1); /* 半透明背景 */
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            max-width: 1200px;
+            width: 100%;
+            backdrop-filter: blur(10px); /* 磨砂玻璃效果 */
+            border: 1px solid rgba(255, 255, 255, 0.2);
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 20px;
-            color: #263238;
-            overflow-x: hidden;
-            box-sizing: border-box;
+            gap: 25px;
         }
 
-        /* Main Title */
-        h1 {
-            font-size: clamp(4rem, 10vw, 8rem); /* Even larger and more responsive title */
-            font-weight: 900;
-            color: #01579b; /* Darker blue for title */
-            text-shadow: 6px 6px 12px rgba(0, 0, 0, 0.3);
-            margin-bottom: 1.5rem;
-            letter-spacing: -0.06em;
-            line-height: 1;
-            text-align: center;
-        }
-
-        .subtitle {
-            font-size: clamp(1.5rem, 3vw, 2.5rem);
-            color: #4f6d7a; /* Muted teal for subtitle */
-            margin-bottom: 3rem;
-            font-weight: 500;
-            text-align: center;
-        }
-
-        /* Timer Display */
-        .timer-display {
-            font-size: clamp(3rem, 7vw, 6rem); /* Larger timer */
-            font-weight: 800;
-            color: #e53935; /* Bright red for urgency */
-            background-color: #ffffff;
-            padding: 1.5rem 3rem; /* Increased padding */
-            border-radius: 2rem;
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
-            margin-bottom: 3rem;
-            min-width: 300px; /* Ensure consistent width */
-            text-align: center;
-            box-sizing: border-box;
-            line-height: 1;
-            border: 3px solid #ffab91; /* Light red border */
-        }
-
-        /* Game Container for Player Cards */
-        .game-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 3rem; /* More space between player cards */
-            justify-content: center;
-            margin-top: 2rem;
-            max-width: 2000px; /* Even wider overall width for 3840x2160 */
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        /* Player Card */
         .player-card {
-            background: linear-gradient(160deg, #ffffff 0%, #f0f0f0 100%); /* Soft white to light gray gradient */
-            border-radius: 3rem; /* Very rounded corners */
-            box-shadow: 0 25px 40px -8px rgba(0, 0, 0, 0.3), 0 10px 15px -4px rgba(0, 0, 0, 0.15); /* Deeper, softer shadow */
-            padding: 3.5rem; /* Increased padding */
-            text-align: center;
-            flex: 1;
-            min-width: 400px; /* Minimum width for cards */
-            max-width: 550px; /* Max width for cards */
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-            border: 2px solid rgba(255, 255, 255, 0.8); /* Subtle white border */
-            box-sizing: border-box;
+            align-items: center;
+            gap: 15px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            flex: 1; /* 让玩家卡片在 flex 容器中均匀分布 */
+            min-width: 280px; /* 最小宽度，防止过小 */
         }
 
         .player-card:hover {
-            transform: translateY(-15px); /* More pronounced lift on hover */
-            box-shadow: 0 30px 50px -12px rgba(0, 0, 0, 0.4), 0 15px 20px -6px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
         }
 
-        .player-card h2 {
-            font-size: clamp(2rem, 4vw, 3rem); /* Responsive player name */
-            font-weight: 800;
-            color: #0288d1; /* Bright blue for player name */
-            margin-bottom: 1.8rem;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
-        }
-
-        .player-card .score-display {
-            font-size: clamp(1.8rem, 3.5vw, 2.5rem); /* Responsive score text */
-            margin-bottom: 1.5rem;
-            color: #43a047; /* Vibrant green for score */
-            font-weight: 700;
-        }
-
-        .player-card .question-text {
-            font-size: clamp(3rem, 6vw, 4.5rem); /* Very large question text */
-            font-weight: 900;
-            color: #d32f2f; /* Strong red for question */
-            margin-bottom: 2.5rem;
-            min-height: 5rem; /* Ensure consistent height for question */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .player-card input {
-            width: 100%;
-            padding: 1.5rem 2rem; /* Increased padding */
-            margin-top: 1rem;
-            border: 3px solid #81d4fa; /* Light blue border */
-            border-radius: 1.5rem; /* More rounded input */
-            font-size: clamp(1.8rem, 3.2vw, 2.5rem); /* Responsive input font */
-            text-align: center;
+        .keyboard-button {
+            background-color: rgba(255, 255, 255, 0.25);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 1.5rem;
             font-weight: 600;
-            color: #212121;
-            background-color: #fcfdff;
-            transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-            box-sizing: border-box;
-        }
-
-        .player-card input:focus {
-            outline: none;
-            border-color: #0288d1; /* Darker blue focus border */
-            box-shadow: 0 0 0 6px rgba(2, 136, 209, 0.4); /* Blue glow on focus */
-        }
-
-        /* Submit buttons within player cards - UNIFORM SIZE */
-        .player-card .submit-button {
-            background: linear-gradient(180deg, #66bb6a 0%, #43a047 100%); /* Green gradient button */
-            color: white;
-            padding: 1.6rem 3rem; /* Increased padding for larger touch target */
-            border: none;
-            border-radius: 1.5rem; /* Rounded button */
             cursor: pointer;
-            margin-top: 2.5rem; /* Increased margin */
-            font-size: clamp(1.4rem, 2.8vw, 1.8rem); /* Responsive font size */
-            font-weight: 700;
-            transition: all 0.2s ease-in-out;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            width: 100%; /* Make button take full width of its parent */
-            max-width: 350px; /* Limit max width for consistency */
-            margin-left: auto;
-            margin-right: auto;
-            box-sizing: border-box;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            flex: 1; /* 让按钮在 flex 容器中均匀分布 */
+            min-width: 60px; /* 确保按钮不会太窄 */
+            height: 60px; /* 统一按钮高度 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        .player-card .submit-button:hover {
-            background: linear-gradient(180deg, #43a047 0%, #388e3c 100%); /* Darker green on hover */
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        .keyboard-button:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
         }
 
-        .player-card .submit-button:active {
-            transform: translateY(0) scale(1);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        .keyboard-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
-        /* Start New Game button - UNIFORM SIZE */
+        .submit-button {
+            background: linear-gradient(45deg, #4CAF50, #8BC34A); /* 提交按钮渐变色 */
+            font-size: 1.2rem;
+            padding: 12px 25px;
+            border-radius: 15px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .submit-button:hover {
+            background: linear-gradient(45deg, #5cb85c, #9ccc65);
+        }
+
         .start-button {
-            background: linear-gradient(180deg, #78909c 0%, #546e7a 100%); /* Gray gradient button */
-            color: white;
-            padding: 2rem 4rem; /* Increased padding */
-            border: none;
-            border-radius: 2rem; /* More rounded */
-            cursor: pointer;
-            margin-top: 4.5rem; /* Increased margin */
-            font-size: clamp(1.8rem, 3.5vw, 2.5rem); /* Responsive font size */
-            font-weight: 700;
-            transition: all 0.2s ease-in-out;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            max-width: 600px; /* Limit max width for aesthetic balance on large screens */
-            width: 100%;
-            box-sizing: border-box;
+            background: linear-gradient(45deg, #007bff, #00c6ff); /* 开始按钮渐变色 */
+            font-size: 1.5rem;
+            padding: 15px 35px;
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+            margin-top: 20px;
         }
 
         .start-button:hover {
-            background: linear-gradient(180deg, #546e7a 0%, #455a64 100%); /* Darker gray on hover */
-            transform: translateY(-6px) scale(1.03);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(45deg, #0056b3, #0099e6);
         }
 
-        .start-button:active {
-            transform: translateY(0) scale(1);
-            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.25);
-        }
-
-        /* Virtual Keyboard Styles - ALL KEYS UNIFORM SIZE */
-        .keyboard {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 3 columns, each taking equal fraction of space */
-            gap: 1.2rem; /* Increased space between keys */
-            margin-top: 2.5rem; /* Margin from input */
-            /* Crucial for ensuring keys fit within the player card's padding */
-            /* Player card has 3.5rem padding on each side, so inner content width is card_width - 7rem. */
-            /* We want keyboard to take up most of this space, with some internal padding. */
-            width: calc(100% - 2.4rem); /* Adjusted width to leave 1.2rem padding on each side within the card's content area */
-            max-width: 360px; /* Adjusted max-width for better fit within player cards */
-            margin-left: auto;
-            margin-right: auto;
-            box-sizing: border-box;
-        }
-
-        .key {
-            background-color: #b3e5fc; /* Light blue key background */
-            color: #0277bd; /* Dark blue key text */
-            padding: 1.8rem; /* Increased padding for larger touch target */
-            border-radius: 1.2rem; /* More rounded */
-            font-size: clamp(1.8rem, 3.5vw, 2.5rem); /* Responsive key text size */
-            font-weight: 700;
-            cursor: pointer;
-            user-select: none; /* Prevent text selection on tap */
-            transition: background-color 0.15s ease-in-out, transform 0.1s ease-in-out, box-shadow 0.15s ease-in-out;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
             display: flex;
-            align-items: center;
             justify-content: center;
-            aspect-ratio: 1 / 1; /* Make keys perfectly square */
-            box-sizing: border-box;
-        }
-
-        .key:hover {
-            background-color: #81d4fa; /* Slightly darker blue on hover */
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .key:active {
-            transform: translateY(0);
-            background-color: #4fc3f7; /* Even darker on active */
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-        }
-
-        .key.delete-key, .key.clear-key {
-            background-color: #ffcdd2; /* Red for delete/clear keys */
-            color: #c62828; /* Dark red text */
-        }
-
-        .key.delete-key:hover, .key.clear-key:hover {
-            background-color: #ef9a9a;
-        }
-
-        .key.delete-key:active, .key.clear-key:active {
-            background-color: #e57373;
-        }
-
-        /* Music Controls */
-        .music-controls {
-            margin-top: 2.5rem;
-            display: flex;
-            flex-wrap: wrap;
             align-items: center;
-            gap: 1.8rem; /* Increased gap */
-            background-color: #ffffff;
-            padding: 1.5rem 2.8rem; /* Increased padding */
-            border-radius: 1.8rem;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
-            box-sizing: border-box;
-            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
         }
 
-        .music-controls button {
-            background-color: #42a5f5; /* Blue for music control */
-            color: white;
-            padding: 1.2rem 2rem; /* Increased padding */
-            border: none;
-            border-radius: 1.2rem;
-            cursor: pointer;
-            font-size: clamp(1.2rem, 2.5vw, 1.6rem); /* Responsive font size */
-            font-weight: 600;
-            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
-            box-sizing: border-box;
-            min-width: 150px; /* Ensure a minimum width for consistency */
+        .modal.show {
+            opacity: 1;
+            visibility: visible;
         }
 
-        .music-controls button:hover {
-            background-color: #2196f3;
-            transform: translateY(-3px);
+        .modal-content {
+            background: linear-gradient(135deg, #6a11cb, #2575fc); /* 模态框渐变背景 */
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            color: #fff;
+            max-width: 500px;
+            width: 90%;
+            transform: translateY(-50px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
-        .music-controls button:active {
+        .modal.show .modal-content {
             transform: translateY(0);
+            opacity: 1;
         }
 
-        .music-controls input[type="range"] {
-            width: clamp(120px, 18vw, 220px); /* Responsive width for slider */
-            -webkit-appearance: none;
+        /* 答案反馈动画 */
+        .correct-feedback {
+            background-color: rgba(76, 175, 80, 0.7); /* 绿色 */
+            animation: flashGreen 0.3s ease-out;
+        }
+
+        .wrong-feedback {
+            background-color: rgba(244, 67, 54, 0.7); /* 红色 */
+            animation: flashRed 0.3s ease-out;
+        }
+
+        @keyframes flashGreen {
+            0% { background-color: transparent; }
+            50% { background-color: rgba(76, 175, 80, 0.7); }
+            100% { background-color: transparent; }
+        }
+
+        @keyframes flashRed {
+            0% { background-color: transparent; }
+            50% { background-color: rgba(244, 67, 54, 0.7); }
+            100% { background-color: transparent; }
+        }
+
+        /* 确保输入框在移动设备上足够大 */
+        input[type="text"] {
+            -webkit-appearance: none; /* 移除 iOS 默认样式 */
+            -moz-appearance: none; /* 移除 Firefox 默认样式 */
             appearance: none;
-            height: 14px; /* Thicker track */
-            background: #bbdefb;
-            border-radius: 7px;
+            padding: 12px;
+            font-size: 1.5rem;
+            text-align: center;
+            border-radius: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            background-color: rgba(0, 0, 0, 0.2);
+            color: #fff;
             outline: none;
-            opacity: 0.8;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #00c6ff;
+        }
+
+        /* 音频控制样式 */
+        .audio-controls {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 15px 25px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            width: fit-content;
+            margin-bottom: 20px;
+        }
+
+        .audio-controls button {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .audio-controls button:hover {
+            transform: scale(1.1);
+        }
+
+        .audio-controls input[type="range"] {
+            -webkit-appearance: none;
+            width: 150px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            outline: none;
             transition: opacity .2s;
         }
 
-        .music-controls input[type="range"]::-webkit-slider-thumb {
+        .audio-controls input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 32px; /* Larger thumb */
-            height: 32px; /* Larger thumb */
-            background: #1976d2;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
+            background: #00c6ff;
             cursor: pointer;
-            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.35);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
         }
 
-        .music-controls input[type="range"]::-moz-range-thumb {
-            width: 32px;
-            height: 32px;
-            background: #1976d2;
+        .audio-controls input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
+            background: #00c6ff;
             cursor: pointer;
-            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.35);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
         }
 
-        /* Winner Modal */
-        #winnerModal {
-            animation: fadeIn 0.3s ease-out forwards;
-        }
-
-        #modalContent {
-            animation: popIn 0.3s ease-out forwards;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes popIn {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 1600px) {
-            .player-card {
-                min-width: 350px;
-                max-width: 48%; /* Allow two cards per row on larger tablets */
-            }
-            .keyboard {
-                max-width: 300px;
-                width: calc(100% - 2rem);
-            }
-        }
-
-        @media (max-width: 1200px) {
-            .game-container {
-                gap: 2rem;
-            }
-            .player-card {
-                padding: 2.5rem;
-                min-width: 300px;
-                max-width: 48%;
-            }
-            .player-card .question-text {
-                font-size: clamp(2.2rem, 4.5vw, 3.5rem);
-                min-height: 4rem;
-            }
-            .player-card input {
-                font-size: clamp(1.5rem, 2.8vw, 2rem);
-            }
-            .keyboard {
-                max-width: 280px;
-                gap: 0.8rem;
-                width: calc(100% - 1.8rem);
-            }
-            .key {
-                font-size: clamp(1.6rem, 3.5vw, 2.2rem);
-                padding: 1.2rem;
-            }
-            .player-card .submit-button {
-                font-size: clamp(1.2rem, 2.5vw, 1.6rem);
-                padding: 1.2rem 2.5rem;
-            }
-            .start-button {
-                font-size: clamp(1.5rem, 3vw, 2rem);
-                padding: 1.5rem 3rem;
-            }
-            .music-controls button {
-                font-size: clamp(1rem, 2vw, 1.4rem);
-                padding: 1rem 1.5rem;
-            }
-            .music-controls input[type="range"] {
-                width: clamp(100px, 15vw, 180px);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .game-container {
+        /* 响应式布局调整 */
+        @media (max-width: 1024px) {
+            .player-sections {
                 flex-direction: column;
-                align-items: center;
-                gap: 2rem;
+                gap: 20px;
             }
             .player-card {
-                max-width: 95%;
-                min-width: unset;
                 width: 100%;
-                padding: 1.8rem;
+                max-width: 400px; /* 限制在小屏幕上的最大宽度 */
             }
-            h1 {
-                font-size: clamp(3rem, 10vw, 4.5rem);
+            .game-container {
+                padding: 20px;
             }
-            .subtitle {
-                font-size: clamp(1.2rem, 3.5vw, 1.8rem);
-            }
-            .timer-display {
-                font-size: clamp(2.5rem, 8vw, 3.5rem);
-                padding: 1rem 2rem;
-            }
-            .player-card .question-text {
-                font-size: clamp(2rem, 7vw, 3rem);
-                min-height: 3.5rem;
-            }
-            .player-card input {
-                font-size: clamp(1.2rem, 3.5vw, 1.8rem);
-                padding: 1rem 1.5rem;
-            }
-            .keyboard {
-                max-width: 280px;
-                gap: 0.7rem;
-                width: calc(100% - 1.4rem); /* Adjust for smaller padding on player-card */
-            }
-            .key {
-                font-size: clamp(1.4rem, 5vw, 2rem);
-                padding: 1rem;
-            }
-            .player-card .submit-button {
-                font-size: clamp(1rem, 3vw, 1.4rem);
-                padding: 1rem 2rem;
-            }
-            .start-button {
-                font-size: clamp(1.3rem, 3.5vw, 1.8rem);
-                padding: 1.2rem 2.5rem;
-            }
-            .music-controls {
+            .audio-controls {
                 flex-direction: column;
-                gap: 1rem;
-                padding: 1rem 1.5rem;
-            }
-            .music-controls button {
-                width: 100%;
-                min-width: unset;
-            }
-            .music-controls input[type="range"] {
-                width: 80%;
+                gap: 10px;
             }
         }
 
-        @media (max-width: 480px) {
-            body {
+        @media (max-width: 600px) {
+            .game-container {
+                padding: 15px;
+            }
+            .player-card {
+                padding: 15px;
+            }
+            .keyboard-button {
                 padding: 10px;
+                font-size: 1.2rem;
+                min-width: 50px;
+                height: 50px;
+            }
+            .submit-button, .start-button {
+                font-size: 1rem;
+                padding: 10px 20px;
             }
             h1 {
-                font-size: clamp(2.5rem, 12vw, 3.5rem);
+                font-size: 2rem;
             }
-            .subtitle {
-                font-size: clamp(1rem, 4vw, 1.2rem);
-            }
-            .timer-display {
-                font-size: clamp(1.8rem, 10vw, 2.5rem);
-                padding: 0.8rem 1.5rem;
-            }
-            .player-card {
-                padding: 1.2rem;
-            }
-            .player-card h2 {
-                font-size: clamp(1.5rem, 5vw, 2rem);
-            }
-            .player-card .score-display {
-                font-size: clamp(1.3rem, 4.5vw, 1.8rem);
-            }
-            .player-card .question-text {
-                font-size: clamp(1.6rem, 8vw, 2.5rem);
-                min-height: 3rem;
-            }
-            .player-card input {
-                font-size: clamp(1rem, 3.5vw, 1.5rem);
-                padding: 0.8rem 1.2rem;
-            }
-            .keyboard {
-                max-width: 240px;
-                gap: 0.5rem;
-                width: calc(100% - 1rem); /* Adjust for smaller padding on player-card */
-            }
-            .key {
-                font-size: clamp(1.2rem, 6vw, 1.8rem);
-                padding: 0.7rem;
-            }
-            .player-card .submit-button {
-                font-size: clamp(0.9rem, 2.8vw, 1.2rem);
-                padding: 0.9rem 1.6rem;
-            }
-            .start-button {
-                font-size: clamp(1rem, 3.5vw, 1.5rem);
-                padding: 1rem 2rem;
-            }
-            .music-controls {
-                padding: 0.8rem 1.2rem;
-            }
-            .music-controls button {
-                font-size: clamp(0.8rem, 3vw, 1rem);
-                padding: 0.5rem 0.8rem;
+            .timer {
+                font-size: 2.5rem;
             }
         }
     </style>
 </head>
 <body>
-    <h1 class="text-center">数学乘法竞赛!</h1>
-    <p class="subtitle text-center">看谁答对的题目最多！</p>
-
-    <!-- Background Music Audio Element -->
-    <audio id="backgroundMusic" loop>
-        <!-- 请在这里替换为你的背景音乐文件链接。例如： -->
-        <!-- <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg"> -->
-        <!-- 这是一个示例链接，你可以替换为你自己的MP3文件链接 -->
-        <!-- 如果你没有自己的音乐文件，可以使用上面的示例链接进行测试 -->
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-        你的浏览器不支持音频元素。
-    </audio>
-
-    <!-- Music Controls -->
-    <div class="music-controls">
-        <button id="musicToggleButton" onclick="toggleMusic()">播放音乐</button>
-        <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="0.5" oninput="setVolume(this.value)">
-    </div>
-
-    <!-- Timer Display -->
-    <div id="timerDisplay" class="timer-display">02:00</div>
-
     <div class="game-container">
-        <!-- Player 1 Card -->
-        <div class="player-card">
-            <h2>玩家 1</h2>
-            <p class="score-display">分数: <span id="score1">0</span></p>
-            <p id="question1" class="question-text">请点击“开始新游戏”</p>
-            <input type="number" id="answerInput1" placeholder="你的答案" class="mt-4" readonly>
-            <!-- Virtual Keyboard for Player 1 -->
-            <div class="keyboard" id="keyboard1">
-                <div class="key" onclick="appendNumber(1, '1')">1</div>
-                <div class="key" onclick="appendNumber(1, '2')">2</div>
-                <div class="key" onclick="appendNumber(1, '3')">3</div>
-                <div class="key" onclick="appendNumber(1, '4')">4</div>
-                <div class="key" onclick="appendNumber(1, '5')">5</div>
-                <div class="key" onclick="appendNumber(1, '6')">6</div>
-                <div class="key" onclick="appendNumber(1, '7')">7</div>
-                <div class="key" onclick="appendNumber(1, '8')">8</div>
-                <div class="key" onclick="appendNumber(1, '9')">9</div>
-                <div class="key" onclick="appendNumber(1, '0')">0</div>
-                <div class="key delete-key" onclick="deleteLastNumber(1)">删除</div>
-                <div class="key clear-key" onclick="clearInput(1)">清空</div>
-            </div>
-            <button id="submitButton1" class="submit-button" onclick="checkAnswer(1)">提交答案</button>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4 text-shadow-lg text-center">乘法竞赛游戏</h1>
+
+        <!-- 实时倒计时 -->
+        <div class="timer text-6xl md:text-7xl font-extrabold mb-6 text-yellow-300 drop-shadow-lg">02:00</div>
+
+        <!-- 背景音乐控制 -->
+        <div class="audio-controls">
+            <button id="playPauseBtn" class="focus:outline-none">
+                <i class="fas fa-play" id="playIcon"></i>
+                <i class="fas fa-pause hidden" id="pauseIcon"></i>
+            </button>
+            <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
+            <audio id="backgroundMusic" loop>
+                <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+                您的浏览器不支持音频元素。
+            </audio>
         </div>
 
-        <!-- Player 2 Card -->
-        <div class="player-card">
-            <h2>玩家 2</h2>
-            <p class="score-display">分数: <span id="score2">0</span></p>
-            <p id="question2" class="question-text">请点击“开始新游戏”</p>
-            <input type="number" id="answerInput2" placeholder="你的答案" class="mt-4" readonly>
-            <!-- Virtual Keyboard for Player 2 -->
-            <div class="keyboard" id="keyboard2">
-                <div class="key" onclick="appendNumber(2, '1')">1</div>
-                <div class="key" onclick="appendNumber(2, '2')">2</div>
-                <div class="key" onclick="appendNumber(2, '3')">3</div>
-                <div class="key" onclick="appendNumber(2, '4')">4</div>
-                <div class="key" onclick="appendNumber(2, '5')">5</div>
-                <div class="key" onclick="appendNumber(2, '6')">6</div>
-                <div class="key" onclick="appendNumber(2, '7')">7</div>
-                <div class="key" onclick="appendNumber(2, '8')">8</div>
-                <div class="key" onclick="appendNumber(2, '9')">9</div>
-                <div class="key" onclick="appendNumber(2, '0')">0</div>
-                <div class="key delete-key" onclick="deleteLastNumber(2)">删除</div>
-                <div class="key clear-key" onclick="clearInput(2)">清空</div>
+        <!-- 玩家区域 -->
+        <div class="player-sections flex flex-col md:flex-row justify-around w-full gap-5">
+            <!-- 玩家 1 -->
+            <div id="player1" class="player-card">
+                <h2 class="text-2xl font-semibold">玩家 1</h2>
+                <div class="score text-3xl font-bold text-green-300">分数: 0</div>
+                <div class="question text-4xl font-bold mt-3 mb-4">? x ? =</div>
+                <input type="text" class="answer-input w-full max-w-xs text-center" placeholder="输入答案" readonly>
+                <div class="keyboard grid grid-cols-3 gap-2 w-full max-w-xs mt-4">
+                    <!-- 数字键 -->
+                    <button class="keyboard-button" data-value="7">7</button>
+                    <button class="keyboard-button" data-value="8">8</button>
+                    <button class="keyboard-button" data-value="9">9</button>
+                    <button class="keyboard-button" data-value="4">4</button>
+                    <button class="keyboard-button" data-value="5">5</button>
+                    <button class="keyboard-button" data-value="6">6</button>
+                    <button class="keyboard-button" data-value="1">1</button>
+                    <button class="keyboard-button" data-value="2">2</button>
+                    <button class="keyboard-button" data-value="3">3</button>
+                    <button class="keyboard-button" data-value="0">0</button>
+                    <button class="keyboard-button" data-action="backspace"><i class="fas fa-backspace"></i></button>
+                    <button class="keyboard-button" data-action="clear">C</button>
+                </div>
+                <button class="submit-button mt-4 px-8 py-3 rounded-full text-white font-bold transition-all duration-300 ease-in-out">提交答案</button>
             </div>
-            <button id="submitButton2" class="submit-button" onclick="checkAnswer(2)">提交答案</button>
+
+            <!-- 玩家 2 -->
+            <div id="player2" class="player-card">
+                <h2 class="text-2xl font-semibold">玩家 2</h2>
+                <div class="score text-3xl font-bold text-green-300">分数: 0</div>
+                <div class="question text-4xl font-bold mt-3 mb-4">? x ? =</div>
+                <input type="text" class="answer-input w-full max-w-xs text-center" placeholder="输入答案" readonly>
+                <div class="keyboard grid grid-cols-3 gap-2 w-full max-w-xs mt-4">
+                    <button class="keyboard-button" data-value="7">7</button>
+                    <button class="keyboard-button" data-value="8">8</button>
+                    <button class="keyboard-button" data-value="9">9</button>
+                    <button class="keyboard-button" data-value="4">4</button>
+                    <button class="keyboard-button" data-value="5">5</button>
+                    <button class="keyboard-button" data-value="6">6</button>
+                    <button class="keyboard-button" data-value="1">1</button>
+                    <button class="keyboard-button" data-value="2">2</button>
+                    <button class="keyboard-button" data-value="3">3</button>
+                    <button class="keyboard-button" data-value="0">0</button>
+                    <button class="keyboard-button" data-action="backspace"><i class="fas fa-backspace"></i></button>
+                    <button class="keyboard-button" data-action="clear">C</button>
+                </div>
+                <button class="submit-button mt-4 px-8 py-3 rounded-full text-white font-bold transition-all duration-300 ease-in-out">提交答案</button>
+            </div>
+
+            <!-- 玩家 3 -->
+            <div id="player3" class="player-card">
+                <h2 class="text-2xl font-semibold">玩家 3</h2>
+                <div class="score text-3xl font-bold text-green-300">分数: 0</div>
+                <div class="question text-4xl font-bold mt-3 mb-4">? x ? =</div>
+                <input type="text" class="answer-input w-full max-w-xs text-center" placeholder="输入答案" readonly>
+                <div class="keyboard grid grid-cols-3 gap-2 w-full max-w-xs mt-4">
+                    <button class="keyboard-button" data-value="7">7</button>
+                    <button class="keyboard-button" data-value="8">8</button>
+                    <button class="keyboard-button" data-value="9">9</button>
+                    <button class="keyboard-button" data-value="4">4</button>
+                    <button class="keyboard-button" data-value="5">5</button>
+                    <button class="keyboard-button" data-value="6">6</button>
+                    <button class="keyboard-button" data-value="1">1</button>
+                    <button class="keyboard-button" data-value="2">2</button>
+                    <button class="keyboard-button" data-value="3">3</button>
+                    <button class="keyboard-button" data-value="0">0</button>
+                    <button class="keyboard-button" data-action="backspace"><i class="fas fa-backspace"></i></button>
+                    <button class="keyboard-button" data-action="clear">C</button>
+                </div>
+                <button class="submit-button mt-4 px-8 py-3 rounded-full text-white font-bold transition-all duration-300 ease-in-out">提交答案</button>
+            </div>
         </div>
 
-        <!-- Player 3 Card -->
-        <div class="player-card">
-            <h2>玩家 3</h2>
-            <p class="score-display">分数: <span id="score3">0</span></p>
-            <p id="question3" class="question-text">请点击“开始新游戏”</p>
-            <input type="number" id="answerInput3" placeholder="你的答案" class="mt-4" readonly>
-            <!-- Virtual Keyboard for Player 3 -->
-            <div class="keyboard" id="keyboard3">
-                <div class="key" onclick="appendNumber(3, '1')">1</div>
-                <div class="key" onclick="appendNumber(3, '2')">2</div>
-                <div class="key" onclick="appendNumber(3, '3')">3</div>
-                <div class="key" onclick="appendNumber(3, '4')">4</div>
-                <div class="key" onclick="appendNumber(3, '5')">5</div>
-                <div class="key" onclick="appendNumber(3, '6')">6</div>
-                <div class="key" onclick="appendNumber(3, '7')">7</div>
-                <div class="key" onclick="appendNumber(3, '8')">8</div>
-                <div class="key" onclick="appendNumber(3, '9')">9</div>
-                <div class="key" onclick="appendNumber(3, '0')">0</div>
-                <div class="key delete-key" onclick="deleteLastNumber(3)">删除</div>
-                <div class="key clear-key" onclick="clearInput(3)">清空</div>
-            </div>
-            <button id="submitButton3" class="submit-button" onclick="checkAnswer(3)">提交答案</button>
-        </div>
+        <!-- 开始新游戏按钮 -->
+        <button id="startGameBtn" class="start-button text-white font-bold transition-all duration-300 ease-in-out">开始新游戏</button>
     </div>
 
-    <button onclick="startGame()" class="start-button">开始新游戏</button>
-
-    <!-- Winner Modal -->
-    <div id="winnerModal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
-        <div class="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full text-center transform scale-95 opacity-0 transition-all duration-300 ease-out" id="modalContent">
-            <h3 class="text-4xl font-bold text-blue-700 mb-4" id="modalTitle"></h3>
-            <p class="text-2xl text-gray-700 mb-6" id="modalMessage"></p>
-            <button onclick="closeModal()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl text-xl transition-colors duration-200">
-                确定
-            </button>
+    <!-- 游戏结束弹窗 -->
+    <div id="gameOverModal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-4xl font-bold mb-4">游戏结束！</h2>
+            <div id="modalMessage" class="text-2xl mb-6"></div>
+            <button id="playAgainBtn" class="submit-button px-8 py-3 rounded-full text-white font-bold transition-all duration-300 ease-in-out">再玩一次</button>
         </div>
     </div>
 
     <script>
-        // Array to store player data: score and current question details
-        const players = [
-            { score: 0, question: {}, id: 1 },
-            { score: 0, question: {}, id: 2 },
-            { score: 0, question: {}, id: 3 }
-        ];
-
-        // Music related elements
-        const backgroundMusic = document.getElementById('backgroundMusic');
-        const musicToggleButton = document.getElementById('musicToggleButton');
-        const volumeControl = document.getElementById('volumeControl');
-
-        // Timer related variables
-        const gameDuration = 120; // 2 minutes in seconds
-        let timeLeft = gameDuration;
-        let timerInterval;
-        let gameActive = false; // Flag to control game state (active or not)
-        const timerDisplay = document.getElementById('timerDisplay');
-
-        // Modal elements
-        const winnerModal = document.getElementById('winnerModal');
-        const modalContent = document.getElementById('modalContent');
-        const modalTitle = document.getElementById('modalTitle');
+        // 获取 DOM 元素
+        const timerDisplay = document.querySelector('.timer');
+        const playerCards = document.querySelectorAll('.player-card');
+        const startGameBtn = document.getElementById('startGameBtn');
+        const gameOverModal = document.getElementById('gameOverModal');
         const modalMessage = document.getElementById('modalMessage');
+        const playAgainBtn = document.getElementById('playAgainBtn');
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const playIcon = document.getElementById('playIcon');
+        const pauseIcon = document.getElementById('pauseIcon');
+        const volumeSlider = document.getElementById('volumeSlider');
 
-        // Set initial volume
-        backgroundMusic.volume = volumeControl.value;
+        // 游戏状态变量
+        let gameActive = false;
+        let timeLeft = 120; // 2分钟 = 120秒
+        let timerInterval;
+        const players = [];
+
+        // 初始化玩家数据
+        for (let i = 0; i < playerCards.length; i++) {
+            const playerCard = playerCards[i];
+            players.push({
+                id: `player${i + 1}`,
+                score: 0,
+                question: { num1: 0, num2: 0, answer: 0 },
+                scoreDisplay: playerCard.querySelector('.score'),
+                questionDisplay: playerCard.querySelector('.question'),
+                answerInput: playerCard.querySelector('.answer-input'),
+                keyboardButtons: playerCard.querySelectorAll('.keyboard-button'),
+                submitButton: playerCard.querySelector('.submit-button')
+            });
+        }
 
         /**
-         * Generates a new multiplication question (num1 x num2) where both numbers are between 1 and 10.
-         * @returns {object} An object containing the question text and its correct answer.
+         * 生成随机乘法题目 (1-10 之间)
+         * @returns {object} 包含 num1, num2 和正确答案的对象
          */
         function generateQuestion() {
-            const num1 = Math.floor(Math.random() * 10) + 1; // Generates a random number from 1 to 10
-            const num2 = Math.floor(Math.random() * 10) + 1; // Generates a random number from 1 to 10
-            return {
-                text: `${num1}x${num2}=`, // Question text using 'x' and '='
-                answer: num1 * num2 // Correct answer
-            };
+            const num1 = Math.floor(Math.random() * 10) + 1;
+            const num2 = Math.floor(Math.random() * 10) + 1;
+            return { num1, num2, answer: num1 * num2 };
         }
 
         /**
-         * Updates the UI for a specific player (score, question text, and clears input).
-         * @param {number} playerIndex - The 1-based index of the player (1, 2, or 3).
+         * 更新玩家 UI (分数和题目)
+         * @param {object} player 玩家对象
          */
-        function updatePlayerUI(playerIndex) {
-            const player = players[playerIndex - 1]; // Get player object (array is 0-indexed)
-            document.getElementById(`score${playerIndex}`).textContent = player.score; // Update score display
-            document.getElementById(`question${playerIndex}`).textContent = player.question.text; // Update question display
-            document.getElementById(`answerInput${playerIndex}`).value = ''; // Clear the input field
+        function updatePlayerUI(player) {
+            player.scoreDisplay.textContent = `分数: ${player.score}`;
+            player.questionDisplay.textContent = `${player.question.num1} x ${player.question.num2} =`;
+            player.answerInput.value = ''; // 清空输入框
         }
 
         /**
-         * Checks the answer submitted by a player.
-         * @param {number} playerIndex - The 1-based index of the player.
+         * 处理虚拟键盘输入
+         * @param {object} player 玩家对象
+         * @param {string} value 按钮值 (数字或操作)
          */
-        function checkAnswer(playerIndex) {
-            // Only allow answering if the game is active
-            if (!gameActive) {
-                console.log(`玩家 ${playerIndex}: 游戏未开始或已结束。`);
-                return;
-            }
+        function handleKeyboardInput(player, value) {
+            if (!gameActive) return; // 游戏未开始或已结束时禁用输入
 
-            const player = players[playerIndex - 1]; // Get player object
-            const answerInput = document.getElementById(`answerInput${playerIndex}`);
-            const userAnswer = parseInt(answerInput.value, 10); // Get user's answer and convert to integer
-
-            // Check if the input is a valid number and not empty
-            if (isNaN(userAnswer) || answerInput.value.trim() === '') {
-                // For a better user experience, you might show a temporary message on the UI
-                // instead of just logging to console.
-                console.log(`玩家 ${playerIndex}: 请输入一个有效的数字。`);
-                return;
-            }
-
-            // Compare user's answer with the correct answer
-            if (userAnswer === player.question.answer) {
-                player.score++; // Increment score if correct
-                player.question = generateQuestion(); // Generate a new question
+            const input = player.answerInput;
+            if (value === 'backspace') {
+                input.value = input.value.slice(0, -1);
+            } else if (value === 'clear') {
+                input.value = '';
             } else {
-                // Generate a new question even if incorrect
-                player.question = generateQuestion();
-            }
-            updatePlayerUI(playerIndex); // Update the player's UI
-        }
-
-        /**
-         * Appends a number to the player's answer input field.
-         * @param {number} playerIndex - The 1-based index of the player.
-         * @param {string} number - The number string to append.
-         */
-        function appendNumber(playerIndex, number) {
-            if (!gameActive) return; // Only allow input if game is active
-            const answerInput = document.getElementById(`answerInput${playerIndex}`);
-            // Limit input length to prevent excessively long numbers (max 3 digits for answers up to 10x10=100)
-            if (answerInput.value.length < 3) {
-                answerInput.value += number;
+                // 限制输入长度，防止过长
+                if (input.value.length < 3) { // 乘法结果最大 10x10=100 (3位)
+                    input.value += value;
+                }
             }
         }
 
         /**
-         * Deletes the last character from the player's answer input field.
-         * @param {number} playerIndex - The 1-based index of the player.
+         * 提交答案并检查
+         * @param {object} player 玩家对象
          */
-        function deleteLastNumber(playerIndex) {
-            if (!gameActive) return; // Only allow input if game is active
-            const answerInput = document.getElementById(`answerInput${playerIndex}`);
-            answerInput.value = answerInput.value.slice(0, -1); // Remove the last character
-        }
+        function submitAnswer(player) {
+            if (!gameActive) return; // 游戏未开始或已结束时禁用提交
 
-        /**
-         * Clears the player's answer input field.
-         * @param {number} playerIndex - The 1-based index of the player.
-         */
-        function clearInput(playerIndex) {
-            if (!gameActive) return; // Only allow input if game is active
-            document.getElementById(`answerInput${playerIndex}`).value = '';
-        }
+            const userAnswer = parseInt(player.answerInput.value, 10);
+            const isCorrect = userAnswer === player.question.answer;
 
-        /**
-         * Toggles the background music play/pause state.
-         */
-        function toggleMusic() {
-            if (backgroundMusic.paused) {
-                backgroundMusic.play()
-                    .then(() => {
-                        musicToggleButton.textContent = '暂停音乐';
-                        console.log("音乐播放成功。");
-                    })
-                    .catch(error => {
-                        console.error("音乐播放失败:", error);
-                        musicToggleButton.textContent = '播放音乐 (需用户交互)';
-                        // Using a custom modal instead of alert
-                        showModal("音乐播放提示", "浏览器可能阻止了自动播放。请点击按钮播放音乐。");
-                    });
+            // 视觉反馈
+            const playerCardElement = document.getElementById(player.id);
+            if (isCorrect) {
+                player.score++;
+                playerCardElement.classList.add('correct-feedback');
             } else {
-                backgroundMusic.pause();
-                musicToggleButton.textContent = '播放音乐';
-                console.log("音乐已暂停。");
+                playerCardElement.classList.add('wrong-feedback');
             }
+
+            // 移除反馈类
+            setTimeout(() => {
+                playerCardElement.classList.remove('correct-feedback', 'wrong-feedback');
+            }, 300); // 0.3秒后移除
+
+            // 生成新题目并更新 UI
+            player.question = generateQuestion();
+            updatePlayerUI(player);
         }
 
         /**
-         * Sets the volume of the background music.
-         * @param {number} volume - The volume level (0 to 1).
-         */
-        function setVolume(volume) {
-            backgroundMusic.volume = volume;
-        }
-
-        /**
-         * Updates the countdown timer display.
+         * 更新倒计时显示
          */
         function updateTimerDisplay() {
             const minutes = Math.floor(timeLeft / 60);
@@ -799,47 +520,93 @@
         }
 
         /**
-         * Starts the countdown timer.
+         * 开始倒计时
          */
-        function startTimer() {
-            clearInterval(timerInterval); // Clear any existing timer
-            timeLeft = gameDuration; // Reset time
-            updateTimerDisplay(); // Update display immediately
-            gameActive = true; // Set game to active
-
-            // Enable inputs and buttons for all players
-            for (let i = 1; i <= 3; i++) {
-                document.getElementById(`answerInput${i}`).disabled = false;
-                document.getElementById(`submitButton${i}`).disabled = false;
-            }
-
+        function startCountdown() {
             timerInterval = setInterval(() => {
                 timeLeft--;
                 updateTimerDisplay();
-
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
                     endGame();
                 }
-            }, 1000); // Update every second
+            }, 1000);
         }
 
         /**
-         * Ends the game, stops the timer, and disables input/buttons.
+         * 初始化游戏状态
+         */
+        function initializeGame() {
+            gameActive = false;
+            timeLeft = 120; // 重置为 2 分钟
+            updateTimerDisplay();
+            startGameBtn.disabled = false; // 启用开始按钮
+
+            players.forEach(player => {
+                player.score = 0;
+                player.question = generateQuestion(); // 初始题目
+                updatePlayerUI(player);
+                player.answerInput.value = '';
+                player.answerInput.disabled = true; // 默认禁用输入
+                player.submitButton.disabled = true; // 默认禁用提交
+                player.keyboardButtons.forEach(button => button.disabled = true); // 默认禁用键盘
+            });
+
+            // 隐藏模态框
+            gameOverModal.classList.remove('show');
+        }
+
+        /**
+         * 开始新游戏
+         */
+        function startGame() {
+            if (gameActive) return; // 防止重复开始
+
+            gameActive = true;
+            startGameBtn.disabled = true; // 禁用开始按钮
+            timeLeft = 120; // 确保从 2 分钟开始
+            updateTimerDisplay();
+            startCountdown();
+
+            // 启用所有玩家的输入和键盘
+            players.forEach(player => {
+                player.answerInput.disabled = false;
+                player.submitButton.disabled = false;
+                player.keyboardButtons.forEach(button => button.disabled = false);
+                player.question = generateQuestion(); // 生成第一道题目
+                updatePlayerUI(player);
+            });
+
+            // 播放背景音乐
+            if (backgroundMusic.paused) {
+                backgroundMusic.play().catch(e => console.error("音乐播放失败:", e));
+                playIcon.classList.add('hidden');
+                pauseIcon.classList.remove('hidden');
+            }
+            gameOverModal.classList.remove('show'); // 确保隐藏模态框
+        }
+
+        /**
+         * 结束游戏
          */
         function endGame() {
-            gameActive = false; // Set game to inactive
-            console.log("游戏结束!");
-            timerDisplay.textContent = "时间到!";
+            gameActive = false;
+            clearInterval(timerInterval);
+            startGameBtn.disabled = false; // 重新启用开始按钮
 
-            // Disable inputs and buttons for all players
-            for (let i = 1; i <= 3; i++) {
-                document.getElementById(`answerInput${i}`).disabled = true;
-                document.getElementById(`submitButton${i}`).disabled = true;
-                document.getElementById(`question${i}`).textContent = "游戏结束!";
-            }
+            // 禁用所有玩家的输入和键盘
+            players.forEach(player => {
+                player.answerInput.disabled = true;
+                player.submitButton.disabled = true;
+                player.keyboardButtons.forEach(button => button.disabled = true);
+            });
 
-            // Determine winner
+            // 暂停音乐
+            backgroundMusic.pause();
+            playIcon.classList.remove('hidden');
+            pauseIcon.classList.add('hidden');
+
+            // 确定赢家
             let maxScore = -1;
             players.forEach(player => {
                 if (player.score > maxScore) {
@@ -848,80 +615,59 @@
             });
 
             const winners = players.filter(player => player.score === maxScore);
-
-            let titleText;
-            let messageText;
-
+            let message = '';
             if (winners.length === 1) {
-                titleText = `恭喜玩家 ${winners[0].id} 获胜!`;
-                messageText = `得分: ${winners[0].score}`;
-                console.log(`${titleText} ${messageText}`);
+                message = `${winners[0].id.replace('player', '玩家 ')} 获胜，得分 ${maxScore}！`;
             } else {
-                const tiedPlayers = winners.map(p => `玩家 ${p.id}`).join(' 和 ');
-                titleText = `游戏平局!`;
-                messageText = `获胜玩家: ${tiedPlayers}，得分: ${maxScore}`;
-                console.log(`${titleText} ${messageText}`);
+                const winnerNames = winners.map(player => player.id.replace('player', '玩家 ')).join(' 和 ');
+                message = `${winnerNames} 平局获胜，得分 ${maxScore}！`;
             }
-            showModal(titleText, messageText);
-        }
 
-        /**
-         * Displays a custom modal with a title and message.
-         * @param {string} title - The title for the modal.
-         * @param {string} message - The message content for the modal.
-         */
-        function showModal(title, message) {
-            modalTitle.textContent = title;
             modalMessage.textContent = message;
-            winnerModal.classList.remove('hidden');
-            // Animate modal entry
-            setTimeout(() => {
-                modalContent.classList.remove('opacity-0', 'scale-95');
-                modalContent.classList.add('opacity-100', 'scale-100');
-            }, 10);
+            gameOverModal.classList.add('show'); // 显示游戏结束弹窗
         }
 
-        /**
-         * Hides the custom modal.
-         */
-        function closeModal() {
-            // Animate modal exit
-            modalContent.classList.remove('opacity-100', 'scale-100');
-            modalContent.classList.add('opacity-0', 'scale-95');
-            setTimeout(() => {
-                winnerModal.classList.add('hidden');
-            }, 300); // Match transition duration
-        }
+        // 事件监听器
+        startGameBtn.addEventListener('click', startGame);
+        playAgainBtn.addEventListener('click', initializeGame); // 点击“再玩一次”时初始化游戏
 
-        /**
-         * Starts a new game, resetting scores and generating initial questions for all players.
-         * Also attempts to play music if not already playing.
-         */
-        function startGame() {
-            players.forEach((player, index) => {
-                player.score = 0; // Reset score
-                player.question = generateQuestion(); // Generate first question
-                updatePlayerUI(player.id); // Update UI for each player
+        // 为每个玩家的键盘和提交按钮添加事件监听器
+        players.forEach(player => {
+            player.keyboardButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const value = button.dataset.value;
+                    const action = button.dataset.action;
+                    handleKeyboardInput(player, value || action);
+                });
             });
-            console.log("游戏开始！"); // Log to console for debugging
+            player.submitButton.addEventListener('click', () => submitAnswer(player));
+            // 允许按回车键提交答案
+            player.answerInput.addEventListener('keypress', (event) => {
+                if (event.key === 'Enter') {
+                    submitAnswer(player);
+                }
+            });
+        });
 
-            startTimer(); // Start the countdown timer
-
-            // Attempt to play music when game starts, if not already playing
+        // 音频控制事件监听器
+        playPauseBtn.addEventListener('click', () => {
             if (backgroundMusic.paused) {
-                toggleMusic(); // Use the toggle function to handle play/pause logic and button text
-            }
-        }
-
-        // Initial setup when the page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            updateTimerDisplay(); // Show initial 02:00
-            // Disable inputs and buttons until game starts
-            for (let i = 1; i <= 3; i++) {
-                document.getElementById(`answerInput${i}`).disabled = true;
-                document.getElementById(`submitButton${i}`).disabled = true;
+                backgroundMusic.play().catch(e => console.error("音乐播放失败:", e));
+                playIcon.classList.add('hidden');
+                pauseIcon.classList.remove('hidden');
+            } else {
+                backgroundMusic.pause();
+                playIcon.classList.remove('hidden');
+                pauseIcon.classList.add('hidden');
             }
         });
+
+        volumeSlider.addEventListener('input', (event) => {
+            backgroundMusic.volume = event.target.value;
+        });
+
+        // 页面加载完成时初始化游戏
+        window.onload = initializeGame;
     </script>
 </body>
 </html>
