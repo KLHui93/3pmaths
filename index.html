@@ -223,6 +223,71 @@
             background-color: #e57373;
         }
 
+        /* Music Controls */
+        .music-controls {
+            margin-top: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background-color: #ffffff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .music-controls button {
+            background-color: #42a5f5; /* Blue for music control */
+            color: white;
+            padding: 0.75rem 1.25rem;
+            border: none;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+        }
+
+        .music-controls button:hover {
+            background-color: #2196f3;
+            transform: translateY(-1px);
+        }
+
+        .music-controls button:active {
+            transform: translateY(0);
+        }
+
+        .music-controls input[type="range"] {
+            width: 100px;
+            -webkit-appearance: none; /* Remove default styling */
+            appearance: none;
+            height: 8px;
+            background: #bbdefb; /* Light blue track */
+            border-radius: 5px;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity .2s;
+        }
+
+        .music-controls input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #1976d2; /* Dark blue thumb */
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .music-controls input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #1976d2;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
         /* Responsive adjustments */
         @media (max-width: 1024px) {
             .game-container {
@@ -268,12 +333,36 @@
                 font-size: 1.5rem;
                 padding: 0.8rem;
             }
+            .music-controls {
+                flex-direction: column;
+                gap: 0.75rem;
+                padding: 0.75rem 1rem;
+            }
+            .music-controls input[type="range"] {
+                width: 80%;
+            }
         }
     </style>
 </head>
 <body>
     <h1 class="text-center">数学乘法竞赛!</h1>
     <p class="subtitle text-center">看谁答对的题目最多！</p>
+
+    <!-- Background Music Audio Element -->
+    <audio id="backgroundMusic" loop>
+        <!-- 请在这里替换为你的背景音乐文件链接。例如： -->
+        <!-- <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg"> -->
+        <!-- 这是一个示例链接，你可以替换为你自己的MP3文件链接 -->
+        <!-- 如果你没有自己的音乐文件，可以使用上面的示例链接进行测试 -->
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+        你的浏览器不支持音频元素。
+    </audio>
+
+    <!-- Music Controls -->
+    <div class="music-controls">
+        <button id="musicToggleButton" onclick="toggleMusic()">播放音乐</button>
+        <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="0.5" oninput="setVolume(this.value)">
+    </div>
 
     <div class="game-container">
         <!-- Player 1 Card -->
@@ -356,6 +445,13 @@
             { score: 0, question: {}, id: 3 }
         ];
 
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        const musicToggleButton = document.getElementById('musicToggleButton');
+        const volumeControl = document.getElementById('volumeControl');
+
+        // Set initial volume
+        backgroundMusic.volume = volumeControl.value;
+
         /**
          * Generates a new multiplication question (num1 x num2) where both numbers are between 1 and 10.
          * @returns {object} An object containing the question text and its correct answer.
@@ -432,7 +528,39 @@
         }
 
         /**
+         * Toggles the background music play/pause state.
+         */
+        function toggleMusic() {
+            if (backgroundMusic.paused) {
+                backgroundMusic.play()
+                    .then(() => {
+                        musicToggleButton.textContent = '暂停音乐';
+                        console.log("音乐播放成功。");
+                    })
+                    .catch(error => {
+                        console.error("音乐播放失败:", error);
+                        musicToggleButton.textContent = '播放音乐 (需用户交互)';
+                        // Inform user that autoplay might be blocked
+                        alert("浏览器可能阻止了自动播放。请点击按钮播放音乐。");
+                    });
+            } else {
+                backgroundMusic.pause();
+                musicToggleButton.textContent = '播放音乐';
+                console.log("音乐已暂停。");
+            }
+        }
+
+        /**
+         * Sets the volume of the background music.
+         * @param {number} volume - The volume level (0 to 1).
+         */
+        function setVolume(volume) {
+            backgroundMusic.volume = volume;
+        }
+
+        /**
          * Starts a new game, resetting scores and generating initial questions for all players.
+         * Also attempts to play music if not already playing.
          */
         function startGame() {
             players.forEach((player, index) => {
@@ -441,6 +569,11 @@
                 updatePlayerUI(player.id); // Update UI for each player
             });
             console.log("游戏开始！"); // Log to console for debugging
+
+            // Attempt to play music when game starts, if not already playing
+            if (backgroundMusic.paused) {
+                toggleMusic(); // Use the toggle function to handle play/pause logic and button text
+            }
         }
 
         // Optional: Add keyboard support for physical keyboards (Enter key to submit)
