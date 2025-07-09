@@ -208,8 +208,9 @@
             grid-template-columns: repeat(3, 1fr); /* 3 columns for numbers */
             gap: 1rem; /* Increased space between keys */
             margin-top: 2rem; /* Increased margin */
-            width: 100%; /* Make keyboard fill player card width */
-            max-width: 380px; /* Limit keyboard width to keep keys from becoming too large */
+            /* Crucial for ensuring keys fit within the player card's padding */
+            width: calc(100% - 2rem); /* Adjusted width to fit within player-card padding (3rem on each side, so 6rem total) */
+            max-width: 300px; /* Adjusted max-width to be safer within player-card's min-width */
             margin-left: auto;
             margin-right: auto;
             box-sizing: border-box; /* Ensure padding/border are included in width */
@@ -336,6 +337,7 @@
             }
             .keyboard {
                 max-width: 320px;
+                width: calc(100% - 2rem); /* Ensure it scales down with padding */
             }
         }
 
@@ -360,6 +362,7 @@
             .keyboard {
                 max-width: 300px;
                 gap: 0.8rem;
+                width: calc(100% - 1.5rem); /* Adjust for smaller padding on player-card */
             }
             .key {
                 font-size: clamp(1.4rem, 4vw, 2rem);
@@ -417,6 +420,7 @@
             .keyboard {
                 max-width: 260px;
                 gap: 0.6rem;
+                width: calc(100% - 1.2rem); /* Adjust for smaller padding on player-card */
             }
             .key {
                 font-size: clamp(1.2rem, 5vw, 1.8rem);
