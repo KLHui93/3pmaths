@@ -205,12 +205,14 @@
         /* Virtual Keyboard Styles - ALL KEYS UNIFORM SIZE */
         .keyboard {
             display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 3 columns for numbers */
-            gap: 1rem; /* Increased space between keys */
-            margin-top: 2rem; /* Increased margin */
+            grid-template-columns: repeat(3, 1fr); /* 3 columns for numbers, each taking equal fraction of space */
+            gap: 1rem; /* Space between keys */
+            margin-top: 2rem; /* Margin from input */
             /* Crucial for ensuring keys fit within the player card's padding */
-            width: calc(100% - 2rem); /* Adjusted width to fit within player-card padding (3rem on each side, so 6rem total) */
-            max-width: 300px; /* Adjusted max-width to be safer within player-card's min-width */
+            /* Player card has 3rem padding on each side. So, inner content width is card_width - 6rem. */
+            /* We want keyboard to take up most of this space, with some internal padding. */
+            width: calc(100% - 2rem); /* Adjusted width to leave 1rem padding on each side within the card's content area */
+            max-width: 300px; /* Adjusted max-width to be safer within player-card's min-width and provide consistent sizing */
             margin-left: auto;
             margin-right: auto;
             box-sizing: border-box; /* Ensure padding/border are included in width */
@@ -249,6 +251,7 @@
         .key.delete-key, .key.clear-key {
             background-color: #ffcdd2; /* Red for delete/clear keys */
             color: #c62828; /* Dark red text */
+            /* REMOVED: grid-column: span 2; to make all keys uniform size */
         }
 
         .key.delete-key:hover, .key.clear-key:hover {
